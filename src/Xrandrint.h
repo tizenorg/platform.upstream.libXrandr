@@ -1,5 +1,5 @@
 /*
- * $XFree86$
+ * $XFree86: xc/lib/Xrandr/Xrandrint.h,v 1.4 2002/10/14 18:01:40 keithp Exp $
  *
  *
  * Copyright © 2000, Compaq Computer Corporation, 
