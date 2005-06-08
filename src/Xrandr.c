@@ -24,6 +24,10 @@
  * Author:  Jim Gettys, HP Labs, HP.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <X11/Xlib.h>
 /* we need to be able to manipulate the Display structure on events */
