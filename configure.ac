@@ -50,7 +50,7 @@ PKG_CHECK_MODULES(X, x11)
 # find the required protocol version
 
 RANDR_VERSION=[`echo $VERSION | sed 's/^\([0-9][0-9]*\.[0-9][0-9]*\).*$/\1/'`]
-PKG_CHECK_MODULES(RANDR, randrproto >= $RANDR_VERSION xext xrender render)
+PKG_CHECK_MODULES(RANDR, randrproto >= $RANDR_VERSION xext xrender renderproto)
 
 AC_OUTPUT([Makefile
 	   src/Makefile
