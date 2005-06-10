@@ -578,6 +578,7 @@ static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window)
 XRRScreenConfiguration *XRRGetScreenInfo (Display *dpy, Window window)
 {
   XRRScreenConfiguration *config;
+  XRRFindDisplay(dpy);
   LockDisplay (dpy);
   config = _XRRGetScreenInfo(dpy, window);
   UnlockDisplay (dpy);
