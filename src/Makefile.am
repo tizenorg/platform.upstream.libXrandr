@@ -10,12 +10,7 @@ AM_CFLAGS = @X_CFLAGS@
 
 INCLUDES = -I$(top_srcdir)/include/X11/extensions
 
-#
-# Library version info.  Check the libtool docs for
-# instructions on when and how to change this value
-#
-libXrandr_la_LDFLAGS = -version-info 2:1:0 -no-undefined
+libXrandr_la_LDFLAGS = -version-number 2:0:0 -no-undefined
 
 libXrandrincludedir = $(includedir)/X11/extensions
 libXrandrinclude_HEADERS = $(top_srcdir)/include/X11/extensions/Xrandr.h 
-
