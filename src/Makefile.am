@@ -2,7 +2,6 @@ lib_LTLIBRARIES = libXrandr.la
 
 libXrandr_la_SOURCES = 	\
 	Xrandr.c 	\
-	Xrandr.h	\
 	Xrandrint.h
 
 libXrandr_la_LIBADD = @X_LIBS@ -lX11 -lXext -lXrender

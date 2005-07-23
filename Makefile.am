@@ -28,4 +28,4 @@ AM_CFLAGS = $(RANDR_CFLAGS) $(X_CFLAGS)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xrandr.pc
 
-EXTRA_DIST = xrandr.pc.in autogen.sh test.c
+EXTRA_DIST = xrandr.pc.in autogen.sh
