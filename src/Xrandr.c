@@ -714,10 +714,17 @@ int XRRUpdateConfiguration(XEvent *event)
 	scevent = (XRRScreenChangeNotifyEvent *) event;
 	snum = XRRRootToScreen(dpy, 
 			       ((XRRScreenChangeNotifyEvent *) event)->root);
-	dpy->screens[snum].width   = scevent->width;
-	dpy->screens[snum].height  = scevent->height;
-	dpy->screens[snum].mwidth  = scevent->mwidth;
-	dpy->screens[snum].mheight = scevent->mheight;
+	if (scevent->rotation & (RR_Rotate_90 | RR_Rotate_270)) {
+		dpy->screens[snum].width   = scevent->height;
+		dpy->screens[snum].height  = scevent->width;
+		dpy->screens[snum].mwidth  = scevent->mheight;
+		dpy->screens[snum].mheight = scevent->mwidth;
+	} else {
+		dpy->screens[snum].width   = scevent->width;
+		dpy->screens[snum].height  = scevent->height;
+		dpy->screens[snum].mwidth  = scevent->mwidth;
+		dpy->screens[snum].mheight = scevent->mheight;
+	}
 	XRenderSetSubpixelOrder (dpy, snum, scevent->subpixel_order);
 	break;
     default:
