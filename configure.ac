@@ -52,6 +52,7 @@ PKG_CHECK_MODULES(X, x11)
 RANDR_VERSION=[`echo $VERSION | sed 's/^\([0-9][0-9]*\.[0-9][0-9]*\).*$/\1/'`]
 PKG_CHECK_MODULES(RANDR, randrproto >= $RANDR_VERSION xext xrender renderproto)
 
+XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
 
 AC_OUTPUT([Makefile
