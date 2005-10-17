@@ -32,7 +32,7 @@ libman_SOURCES = Xrandr.man
 libman_DATA = $(libman_SOURCES:man=$(LIB_MAN_SUFFIX)) \
 	      $(Xrandr_shadows:=.$(LIB_MAN_SUFFIX))
 
-BUILT_SOURCES = .shadows.DONE
+BUILT_SOURCES = shadows.DONE
 
 EXTRA_DIST = $(libman_SOURCES)
 
@@ -73,7 +73,7 @@ Xrandr_shadows =                            \
     XRRConfig                               \
     XRRSelectInput
 
-.shadows.DONE:
+shadows.DONE:
 	-rm -f $(Xrandr_shadows:=.$(LIB_MAN_SUFFIX))
 	(for i in $(Xrandr_shadows:=.$(LIB_MAN_SUFFIX)) ; do \
 	 echo .so man$(LIB_MAN_SUFFIX)/Xrandr.$(LIB_MAN_SUFFIX) > $$i; \
