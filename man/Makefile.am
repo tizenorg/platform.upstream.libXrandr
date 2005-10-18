@@ -29,8 +29,8 @@ libmandir = $(mandir)/man$(LIB_MAN_SUFFIX)
 
 libman_SOURCES = Xrandr.man
 
-libman_DATA = $(libman_SOURCES:man=$(LIB_MAN_SUFFIX)) \
-	      $(Xrandr_shadows:=.$(LIB_MAN_SUFFIX))
+libman_DATA = $(libman_SOURCES:man=@LIB_MAN_SUFFIX@) \
+	      $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@)
 
 BUILT_SOURCES = shadows.DONE
 
@@ -74,7 +74,7 @@ Xrandr_shadows =                            \
     XRRSelectInput
 
 shadows.DONE:
-	-rm -f $(Xrandr_shadows:=.$(LIB_MAN_SUFFIX))
-	(for i in $(Xrandr_shadows:=.$(LIB_MAN_SUFFIX)) ; do \
+	-rm -f $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@)
+	(for i in $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@) ; do \
 	 echo .so man$(LIB_MAN_SUFFIX)/Xrandr.$(LIB_MAN_SUFFIX) > $$i; \
 	 done)
