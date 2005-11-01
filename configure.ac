@@ -44,7 +44,7 @@ AC_PROG_CC
 AC_PROG_LIBTOOL
 
 # Check for X
-PKG_CHECK_MODULES(X, x11)
+PKG_CHECK_MODULES(X, x11 xext xrender randrproto)
 		  
 # Check randr configuration, strip extra digits from package version to
 # find the required protocol version
