@@ -4,8 +4,8 @@ libXrandr_la_SOURCES = 	\
 	Xrandr.c 	\
 	Xrandrint.h
 
-libXrandr_la_LIBADD = @X_LIBS@
-AM_CFLAGS = @X_CFLAGS@
+libXrandr_la_LIBADD = @X_LIBS@ @RANDR_LIBS@
+AM_CFLAGS = @X_CFLAGS@ @RANDR_CFLAGS@
 
 INCLUDES = -I$(top_srcdir)/include/X11/extensions
 

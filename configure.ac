@@ -44,13 +44,17 @@ AC_PROG_CC
 AC_PROG_LIBTOOL
 
 # Check for X
-PKG_CHECK_MODULES(X, x11 xext xrender randrproto)
+PKG_CHECK_MODULES(X, x11)
+AC_SUBST(X_CFLAGS)
+AC_SUBST(X_LIBS)
 		  
 # Check randr configuration, strip extra digits from package version to
 # find the required protocol version
 
 RANDR_VERSION=[`echo $VERSION | sed 's/^\([0-9][0-9]*\.[0-9][0-9]*\).*$/\1/'`]
 PKG_CHECK_MODULES(RANDR, randrproto >= $RANDR_VERSION xext xrender renderproto)
+AC_SUBST(RANDR_CFLAGS)
+AC_SUBST(RANDR_LIBS)
 
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
