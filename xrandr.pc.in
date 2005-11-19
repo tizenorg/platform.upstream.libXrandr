@@ -6,5 +6,7 @@ includedir=@includedir@
 Name: Xrandr
 Description: X RandR Library
 Version: @VERSION@
-Cflags: -I${includedir} @RANDR_CFLAGS@ @X_CFLAGS@
-Libs: -L${libdir} -lXrandr @RANDR_LIBS@ @X_LIBS@
+Requires: xproto randrproto >= @RANDR_VERSION@
+Requires.private: x11 xext xrender
+Cflags: -I${includedir}
+Libs: -L${libdir} -lXrandr
