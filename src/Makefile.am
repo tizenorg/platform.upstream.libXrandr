@@ -5,7 +5,7 @@ libXrandr_la_SOURCES = 	\
 	Xrandrint.h
 
 libXrandr_la_LIBADD = @X_LIBS@ @RANDR_LIBS@
-AM_CFLAGS = @X_CFLAGS@ @RANDR_CFLAGS@
+AM_CFLAGS = @X_CFLAGS@ @RANDR_CFLAGS@ @MALLOC_ZERO_CFLAGS@
 
 INCLUDES = -I$(top_srcdir)/include/X11/extensions
 

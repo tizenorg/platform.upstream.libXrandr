@@ -57,6 +57,7 @@ PKG_CHECK_MODULES(RANDR, randrproto >= $RANDR_VERSION xext xextproto xrender ren
 AC_SUBST(RANDR_CFLAGS)
 AC_SUBST(RANDR_LIBS)
 
+XORG_CHECK_MALLOC_ZERO
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
 
@@ -64,4 +65,3 @@ AC_OUTPUT([Makefile
 	   src/Makefile
 	   man/Makefile
            xrandr.pc])
-
