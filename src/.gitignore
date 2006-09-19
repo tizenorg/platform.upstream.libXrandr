@@ -2,5 +2,6 @@
 .libs
 libXrandr.la
 *.lo
+*.o
 Makefile
 Makefile.in
