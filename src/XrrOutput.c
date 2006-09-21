@@ -45,6 +45,7 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
 
     RRCheckExtension (dpy, info, 0);
 
+    LockDisplay (dpy);
     GetReq (RRGetOutputInfo, req);
     req->reqType = info->codes->major_opcode;
     req->randrReqType = X_RRGetOutputInfo;
@@ -53,6 +54,7 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
 
     if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
     {
+	UnlockDisplay (dpy);
 	SyncHandle ();
 	return NULL;
     }
@@ -79,6 +81,7 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
     xoi = (XRROutputInfo *) Xmalloc(rbytes);
     if (xoi == NULL) {
 	_XEatData (dpy, (unsigned long) nbytes);
+	UnlockDisplay (dpy);
 	SyncHandle ();
 	return NULL;
     }
@@ -102,7 +105,7 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
     /*
      * Read name and '\0' terminate
      */
-    _XRead (dpy, xoi->name, rep.nameLength);
+    _XReadPad (dpy, xoi->name, rep.nameLength);
     xoi->name[rep.nameLength] = '\0';
     
     /*
@@ -111,6 +114,8 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
     if (nbytes > nbytesRead)
 	_XEatData (dpy, (unsigned long) (nbytes - nbytesRead));
     
+    UnlockDisplay (dpy);
+    SyncHandle ();
     return (XRROutputInfo *) xoi;
 }
 

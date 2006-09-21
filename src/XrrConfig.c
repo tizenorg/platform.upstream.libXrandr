@@ -247,7 +247,9 @@ static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window)
 	DeqAsyncHandler (dpy, &async);
 	if (async_state.error)
 	{
-	  SyncHandle();
+	    UnlockDisplay (dpy);
+	    SyncHandle();
+	    LockDisplay (dpy);
 	}
 	xrri->major_version = async_state.major_version;
 	xrri->minor_version = async_state.minor_version;
@@ -281,7 +283,6 @@ static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window)
     scp = (struct _XRRScreenConfiguration *) Xmalloc(rbytes);
     if (scp == NULL) {
 	_XEatData (dpy, (unsigned long) nbytes);
-	SyncHandle ();
 	return NULL;
     }
 
@@ -335,13 +336,13 @@ static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window)
 
 XRRScreenConfiguration *XRRGetScreenInfo (Display *dpy, Window window)
 {
-  XRRScreenConfiguration *config;
-  XRRFindDisplay(dpy);
-  LockDisplay (dpy);
-  config = _XRRGetScreenInfo(dpy, window);
-  UnlockDisplay (dpy);
-  SyncHandle ();
-  return config;
+    XRRScreenConfiguration *config;
+    XRRFindDisplay(dpy);
+    LockDisplay (dpy);
+    config = _XRRGetScreenInfo(dpy, window);
+    UnlockDisplay (dpy);
+    SyncHandle ();
+    return config;
 }
 
     

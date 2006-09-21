@@ -195,7 +195,7 @@ Time XRRTimes (Display *dpy, int screen, Time *config_timestamp);
 
 /* Version 1.2 additions */
 
-void
+Status
 XRRGetScreenSizeRange (Display *dpy, Window window,
 		       int *minWidth, int *minHeight,
 		       int *maxWidth, int *maxHeight);
@@ -322,13 +322,15 @@ void
 XRRFreeCrtcInfo (XRRCrtcInfo *crtcInfo);
 
 Status
-XRRSetCrtc (Display *dpy,
-	    XRRScreenResources *resources,
-	    RRCrtc crtc,
-	    RRMode mode,
-	    Rotation rotation,
-	    RROutput *outputs,
-	    int noutputs);
+XRRSetCrtcConfig (Display *dpy,
+		  XRRScreenResources *resources,
+		  RRCrtc crtc,
+		  Time timestamp,
+		  int x, int y,
+		  RRMode mode,
+		  Rotation rotation,
+		  RROutput *outputs,
+		  int noutputs);
 
 int
 XRRGetCrtcGammaSize (Display *dpy, RRCrtc crtc);

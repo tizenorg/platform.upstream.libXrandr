@@ -51,6 +51,7 @@ XRRGetScreenResources (Display *dpy, Window window)
 
     RRCheckExtension (dpy, info, 0);
 
+    LockDisplay (dpy);
     xrri = (XRandRInfo *) info->data;
 
     if (xrri->major_version == -1)
@@ -81,6 +82,7 @@ XRRGetScreenResources (Display *dpy, Window window)
     {
 	if (getting_version)
 	    DeqAsyncHandler (dpy, &async);
+	UnlockDisplay (dpy);
 	SyncHandle ();
 	return NULL;
     }
@@ -89,7 +91,9 @@ XRRGetScreenResources (Display *dpy, Window window)
 	DeqAsyncHandler (dpy, &async);
 	if (async_state.error)
 	{
-	  SyncHandle();
+	    UnlockDisplay (dpy);
+	    SyncHandle();
+	    LockDisplay (dpy);
 	}
 	xrri->major_version = async_state.major_version;
 	xrri->minor_version = async_state.minor_version;
@@ -121,6 +125,7 @@ XRRGetScreenResources (Display *dpy, Window window)
 	if (xrsr) Xfree (xrsr);
 	if (wire_names) Xfree (wire_names);
 	_XEatData (dpy, (unsigned long) nbytes);
+	UnlockDisplay (dpy);
 	SyncHandle ();
 	return NULL;
     }
@@ -162,7 +167,7 @@ XRRGetScreenResources (Display *dpy, Window window)
     /*
      * Read names and '\0' pad each one
      */
-    _XRead (dpy, wire_names, rep.nbytesNames);
+    _XReadPad (dpy, wire_names, rep.nbytesNames);
     wire_name = wire_names;
     for (i = 0; i < rep.nModes; i++)  {
 	xrsr->modes[i].name = names;
@@ -179,6 +184,8 @@ XRRGetScreenResources (Display *dpy, Window window)
     if (nbytes > nbytesRead)
 	_XEatData (dpy, (unsigned long) (nbytes - nbytesRead));
     
+    UnlockDisplay (dpy);
+    SyncHandle();
     return (XRRScreenResources *) xrsr;
 }
 
@@ -188,3 +195,54 @@ XRRFreeScreenResources (XRRScreenResources *resources)
     Xfree (resources);
 }
 
+Status
+XRRGetScreenSizeRange (Display *dpy, Window window,
+		       int *minWidth, int *minHeight,
+		       int *maxWidth, int *maxHeight)
+{
+    XExtDisplayInfo		*info = XRRFindDisplay(dpy);
+    xRRGetScreenSizeRangeReq	*req;
+    xRRGetScreenSizeRangeReply	rep;
+
+    RRCheckExtension (dpy, info, 0);
+    LockDisplay (dpy);
+    GetReq (RRGetScreenSizeRange, req);
+    req->reqType = info->codes->major_opcode;
+    req->randrReqType = X_RRGetScreenSizeRange;
+    req->window = window;
+    if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
+    {
+	UnlockDisplay (dpy);
+	SyncHandle ();
+	return False;
+    }
+    UnlockDisplay (dpy);
+    SyncHandle ();
+    *minWidth = rep.minWidth;
+    *minHeight = rep.minHeight;
+    *maxWidth = rep.maxWidth;
+    *maxHeight = rep.maxHeight;
+   return True;
+}
+
+void
+XRRSetScreenSize (Display *dpy, Window window,
+		  int width, int height,
+		  int mmWidth, int mmHeight)
+{
+    XExtDisplayInfo		*info = XRRFindDisplay(dpy);
+    xRRSetScreenSizeReq		*req;
+
+    RRSimpleCheckExtension (dpy, info);
+    LockDisplay (dpy);
+    GetReq (RRSetScreenSize, req);
+    req->reqType = info->codes->major_opcode;
+    req->randrReqType = X_RRSetScreenSize;
+    req->window = window;
+    req->width = width;
+    req->height = height;
+    req->widthInMillimeters = mmWidth;
+    req->heightInMillimeters = mmHeight;
+    UnlockDisplay (dpy);
+    SyncHandle ();
+}
