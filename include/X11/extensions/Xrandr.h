@@ -206,6 +206,8 @@ XRRSetScreenSize (Display *dpy, Window window,
 		  int mmWidth, int mmHeight);
 
 typedef unsigned long XRRModeFlags;
+typedef unsigned int XRRModeOrigin;
+typedef unsigned int XRROutputOptions;
 
 typedef struct _XRRModeInfo {
     RRMode		id;
@@ -224,7 +226,13 @@ typedef struct _XRRModeInfo {
     char		*name;
     unsigned int	nameLength;
     XRRModeFlags	modeFlags;
+    XRRModeOrigin	origin;
 } XRRModeInfo;
+
+typedef struct _XRROutputConfig {
+    RROutput		output;
+    XRROutputOptions	options;
+} XRROutputConfig;
 
 typedef struct _XRRScreenResources {
     Time	timestamp;
@@ -248,8 +256,10 @@ typedef struct _XRROutputInfo {
     RRCrtc	    crtc;
     char	    *name;
     int		    nameLen;
+    XRROutputOptions current_options;
     Connection	    connection;
     SubpixelOrder   subpixel_order;
+    XRROutputOptions possible_options;
     int		    ncrtc;
     RRCrtc	    *crtcs;
     int		    nclone;
@@ -329,7 +339,7 @@ XRRSetCrtcConfig (Display *dpy,
 		  int x, int y,
 		  RRMode mode,
 		  Rotation rotation,
-		  RROutput *outputs,
+		  XRROutputConfig *outputs,
 		  int noutputs);
 
 int

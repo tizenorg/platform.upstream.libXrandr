@@ -32,6 +32,8 @@
 #include <X11/extensions/Xrender.h>
 #include "Xrandrint.h"
 
+#define OutputInfoExtra	(SIZEOF(xRRGetOutputInfoReply) - 32)
+				
 XRROutputInfo *
 XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
 {
@@ -52,14 +54,14 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
     req->output = output;
     req->configTimestamp = resources->configTimestamp;
 
-    if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
+    if (!_XReply (dpy, (xReply *) &rep, OutputInfoExtra >> 2, xFalse))
     {
 	UnlockDisplay (dpy);
 	SyncHandle ();
 	return NULL;
     }
 
-    nbytes = (long) rep.length << 2;
+    nbytes = ((long) (rep.length) << 2) - OutputInfoExtra;
 
     nbytesRead = (long) (rep.nCrtcs * 4 +
 			 rep.nModes * 4 +
@@ -88,8 +90,10 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
 
     xoi->timestamp = rep.timestamp;
     xoi->crtc = rep.crtc;
+    xoi->current_options = rep.currentOptions;
     xoi->connection = rep.connection;
     xoi->subpixel_order = rep.subpixelOrder;
+    xoi->possible_options = rep.possibleOptions;
     xoi->ncrtc = rep.nCrtcs;
     xoi->crtcs = (RRCrtc *) (xoi + 1);
     xoi->nmode = rep.nModes;

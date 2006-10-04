@@ -121,7 +121,7 @@ XRRSetCrtcConfig (Display *dpy,
 		  int x, int y,
 		  RRMode mode,
 		  Rotation rotation,
-		  RROutput *outputs,
+		  XRROutputConfig *outputs,
 		  int noutputs)
 {
     XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
@@ -135,7 +135,7 @@ XRRSetCrtcConfig (Display *dpy,
     GetReq (RRSetCrtcConfig, req);
     req->reqType = info->codes->major_opcode;
     req->randrReqType = X_RRSetCrtcConfig;
-    req->length += noutputs;
+    req->length += noutputs << 1;
     req->crtc = crtc;
     req->timestamp = timestamp;
     req->configTimestamp = resources->configTimestamp;
@@ -143,7 +143,7 @@ XRRSetCrtcConfig (Display *dpy,
     req->y = y;
     req->mode = mode;
     req->rotation = rotation;
-    Data32 (dpy, outputs, noutputs << 2);
+    Data32 (dpy, outputs, noutputs << 3);
 
     if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
 	rep.status = RRSetConfigFailed;
