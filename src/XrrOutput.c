@@ -97,6 +97,7 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
     xoi->ncrtc = rep.nCrtcs;
     xoi->crtcs = (RRCrtc *) (xoi + 1);
     xoi->nmode = rep.nModes;
+    xoi->npreferred = rep.nPreferred;
     xoi->modes = (RRMode *) (xoi->crtcs + rep.nCrtcs);
     xoi->nclone = rep.nClones;
     xoi->clones = (RROutput *) (xoi->modes + rep.nModes);

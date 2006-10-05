@@ -162,7 +162,6 @@ XRRGetScreenResources (Display *dpy, Window window)
 	xrsr->modes[i].vTotal = modeInfo.vTotal;
 	xrsr->modes[i].nameLength = modeInfo.nameLength;
 	xrsr->modes[i].modeFlags = modeInfo.modeFlags;
-	xrsr->modes[i].origin = modeInfo.origin;
     }
 
     /*

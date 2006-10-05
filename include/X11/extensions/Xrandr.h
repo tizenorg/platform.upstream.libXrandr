@@ -206,7 +206,6 @@ XRRSetScreenSize (Display *dpy, Window window,
 		  int mmWidth, int mmHeight);
 
 typedef unsigned long XRRModeFlags;
-typedef unsigned int XRRModeOrigin;
 typedef unsigned int XRROutputOptions;
 
 typedef struct _XRRModeInfo {
@@ -226,7 +225,6 @@ typedef struct _XRRModeInfo {
     char		*name;
     unsigned int	nameLength;
     XRRModeFlags	modeFlags;
-    XRRModeOrigin	origin;
 } XRRModeInfo;
 
 typedef struct _XRROutputConfig {
@@ -265,6 +263,7 @@ typedef struct _XRROutputInfo {
     int		    nclone;
     RROutput	    *clones;
     int		    nmode;
+    int		    npreferred;
     RRMode	    *modes;
 } XRROutputInfo;
 
