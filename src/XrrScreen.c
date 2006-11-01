@@ -150,8 +150,6 @@ XRRGetScreenResources (Display *dpy, Window window)
 	xrsr->modes[i].id = modeInfo.id;
 	xrsr->modes[i].width = modeInfo.width;
 	xrsr->modes[i].height = modeInfo.height;
-	xrsr->modes[i].mmWidth = modeInfo.mmWidth;
-	xrsr->modes[i].mmHeight = modeInfo.mmHeight;
 	xrsr->modes[i].dotClock = modeInfo.dotClock;
 	xrsr->modes[i].hSyncStart = modeInfo.hSyncStart;
 	xrsr->modes[i].hSyncEnd = modeInfo.hSyncEnd;

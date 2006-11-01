@@ -91,6 +91,8 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
     xoi->timestamp = rep.timestamp;
     xoi->crtc = rep.crtc;
     xoi->current_options = rep.currentOptions;
+    xoi->mm_width = rep.mmWidth;
+    xoi->mm_height = rep.mmHeight;
     xoi->connection = rep.connection;
     xoi->subpixel_order = rep.subpixelOrder;
     xoi->possible_options = rep.possibleOptions;

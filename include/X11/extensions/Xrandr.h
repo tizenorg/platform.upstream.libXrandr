@@ -212,8 +212,6 @@ typedef struct _XRRModeInfo {
     RRMode		id;
     unsigned int	width;
     unsigned int	height;
-    unsigned long	mmWidth;
-    unsigned long	mmHeight;
     unsigned long	dotClock;
     unsigned int	hSyncStart;
     unsigned int	hSyncEnd;
@@ -255,6 +253,8 @@ typedef struct _XRROutputInfo {
     char	    *name;
     int		    nameLen;
     XRROutputOptions current_options;
+    unsigned long   mm_width;
+    unsigned long   mm_height;
     Connection	    connection;
     SubpixelOrder   subpixel_order;
     XRROutputOptions possible_options;
