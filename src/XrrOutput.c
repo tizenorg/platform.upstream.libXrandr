@@ -349,7 +349,7 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
 	(*prop)[nbytes] = '\0';
     }
 
-    *actual_type = rep.type;
+    *actual_type = rep.propertyType;
     *actual_format = rep.format;
     *nitems = rep.nItems;
     *bytes_after = rep.bytesAfter;
