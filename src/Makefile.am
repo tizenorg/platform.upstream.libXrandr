@@ -7,6 +7,7 @@ libXrandr_la_SOURCES = 	\
 	XrrCrtc.c	\
 	XrrMode.c	\
 	XrrOutput.c	\
+	XrrProperty.c	\
 	XrrScreen.c
 
 libXrandr_la_LIBADD = @X_LIBS@ @RANDR_LIBS@

@@ -268,6 +268,22 @@ XRRFreeOutputInfo (XRROutputInfo *outputInfo);
 Atom *
 XRRListOutputProperties (Display *dpy, RROutput output, int *nprop);
 
+typedef struct {
+    Bool    pending;
+    Bool    range;
+    Bool    immutable;
+    int	    num_values;
+    long    *values;
+} XRRPropertyInfo;
+
+XRRPropertyInfo *
+XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property);
+
+void
+XRRConfigureOutputProperty (Display *dpy, RROutput output, Atom property,
+			    Bool pending, Bool range, int num_values,
+			    long *values);
+			
 void
 XRRChangeOutputProperty (Display *dpy, RROutput output,
 			 Atom property, Atom type,
@@ -280,7 +296,7 @@ XRRDeleteOutputProperty (Display *dpy, RROutput output, Atom property);
 int
 XRRGetOutputProperty (Display *dpy, RROutput output,
 		      Atom property, long offset, long length,
-		      Bool delete, Atom req_type, 
+		      Bool delete, Bool pending, Atom req_type, 
 		      Atom *actual_type, int *actual_format,
 		      unsigned long *nitems, unsigned long *bytes_after,
 		      unsigned char **prop);
