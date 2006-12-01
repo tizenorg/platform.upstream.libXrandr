@@ -155,24 +155,116 @@ XRRSetCrtcConfig (Display *dpy,
 int
 XRRGetCrtcGammaSize (Display *dpy, RRCrtc crtc)
 {
+    XExtDisplayInfo		*info = XRRFindDisplay(dpy);
+    xRRGetCrtcGammaSizeReply	rep;
+    xRRGetCrtcGammaSizeReq	*req;
+    int				i;
+
+    RRCheckExtension (dpy, info, 0);
+
+    LockDisplay(dpy);
+    GetReq (RRGetCrtcGammaSize, req);
+    req->reqType = info->codes->major_opcode;
+    req->randrReqType = X_RRGetCrtcGammaSize;
+    req->crtc = crtc;
+
+    if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
+	rep.status = RRSetConfigFailed;
+    UnlockDisplay (dpy);
+    SyncHandle ();
+    return rep.size;
 }
 
 XRRCrtcGamma *
 XRRGetCrtcGamma (Display *dpy, RRCrtc crtc)
 {
+    XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
+    xRRGetCrtcGammaReply    rep;
+    xRRGetCrtcGammaReq	    *req;
+    int			    i;
+    XRRCrtcGamma	    *crtc_gamma;
+    long    		    nbytes;
+    long    		    nbytesRead;
+
+    RRCheckExtension (dpy, info, 0);
+
+    LockDisplay(dpy);
+    GetReq (RRGetCrtcGamma, req);
+    req->reqType = info->codes->major_opcode;
+    req->randrReqType = X_RRGetCrtcGamma;
+    req->crtc = crtc;
+
+    if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
+	rep.status = RRSetConfigFailed;
+
+    nbytes = (long) rep.length << 2;
+    
+    /* three channels of CARD16 data */
+    nbytesRead = (rep.size * 2 * 3);
+
+    crtc_gamma = XRRAllocGamma (rep.size);
+    
+    if (!crtc_gamma)
+    {
+	_XEatData (dpy, (unsigned long) nbytes);
+	UnlockDisplay (dpy);
+	SyncHandle ();
+	return NULL;
+    }
+    _XRead16 (dpy, crtc_gamma->red, rep.size * 2);
+    _XRead16 (dpy, crtc_gamma->green, rep.size * 2);
+    _XRead16 (dpy, crtc_gamma->blue, rep.size * 2);
+    
+    if (nbytes > nbytesRead)
+	_XEatData (dpy, (unsigned long) (nbytes - nbytesRead));
+    
+    UnlockDisplay (dpy);
+    SyncHandle ();
+    return crtc_gamma;
 }
 
 XRRCrtcGamma *
 XRRAllocGamma (int size)
 {
+    XRRCrtcGamma    *crtc_gamma;
+
+    crtc_gamma = Xmalloc (sizeof (XRRCrtcGamma) +
+			  sizeof (crtc_gamma->red[0]) * size * 3);
+    if (!crtc_gamma)
+	return NULL;
+    crtc_gamma->size = size;
+    crtc_gamma->red = (unsigned short *) (crtc_gamma + 1);
+    crtc_gamma->green = crtc_gamma->red + size;
+    crtc_gamma->blue = crtc_gamma->green + size;
+    return crtc_gamma;
 }
 
 void
-XRRSetCrtcGamma (Display *dpy, RRCrtc crtc, XRRCrtcGamma *gamma)
+XRRSetCrtcGamma (Display *dpy, RRCrtc crtc, XRRCrtcGamma *crtc_gamma)
 {
+    XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
+    xRRSetCrtcGammaReq	    *req;
+
+    RRSimpleCheckExtension (dpy, info);
+
+    LockDisplay(dpy);
+    GetReq (RRSetCrtcGamma, req);
+    req->reqType = info->codes->major_opcode;
+    req->randrReqType = X_RRSetCrtcGamma;
+    req->crtc = crtc;
+    req->length += (crtc_gamma->size * 2 * 3 + 3) >> 2;
+    /*
+     * Note this assumes the structure was allocated with XRRAllocGamma,
+     * otherwise the channels might not be contiguous
+     */
+    Data16 (dpy, crtc_gamma->red, crtc_gamma->size * 2 * 3);
+    
+    UnlockDisplay (dpy);
+    SyncHandle ();
 }
 
 void
-XRRFreeGamma (XRRCrtcGamma *gamma)
+XRRFreeGamma (XRRCrtcGamma *crtc_gamma)
 {
+    Xfree (crtc_gamma);
 }

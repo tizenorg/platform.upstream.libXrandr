@@ -58,9 +58,9 @@ XRRListOutputProperties (Display *dpy, RROutput output, int *nprop)
 	return NULL;
     }
 
-    if (rep.nProperties) {
-	nbytes = rep.nProperties * sizeof (Atom);
-	netbytes = rep.nProperties << 2;
+    if (rep.nAtoms) {
+	nbytes = rep.nAtoms * sizeof (Atom);
+	netbytes = rep.nAtoms << 2;
 
 	props = (Atom *) Xmalloc (nbytes);
 	if (props == NULL) {
@@ -74,7 +74,7 @@ XRRListOutputProperties (Display *dpy, RROutput output, int *nprop)
 	_XRead32 (dpy, props, nbytes);
     }
 
-    *nprop = rep.nProperties;
+    *nprop = rep.nAtoms;
     UnlockDisplay (dpy);
     SyncHandle ();
     return props;
@@ -98,6 +98,7 @@ XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property)
     req->reqType = info->codes->major_opcode;
     req->randrReqType = X_RRQueryOutputProperty;
     req->output = output;
+    req->property = property;
 
     if (!_XReply (dpy, (xReply *) &rep, 0, xFalse)) {
 	UnlockDisplay (dpy);
