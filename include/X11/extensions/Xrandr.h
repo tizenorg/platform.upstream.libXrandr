@@ -353,10 +353,10 @@ int
 XRRGetCrtcGammaSize (Display *dpy, RRCrtc crtc);
 
 typedef struct _XRRCrtcGamma {
-    int	    size;
-    CARD16  *red;
-    CARD16  *green;
-    CARD16  *blue;
+    int		    size;
+    unsigned short  *red;
+    unsigned short  *green;
+    unsigned short  *blue;
 } XRRCrtcGamma;
 
 XRRCrtcGamma *
