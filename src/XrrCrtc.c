@@ -90,6 +90,7 @@ XRRGetCrtcInfo (Display *dpy, XRRScreenResources *resources, RRCrtc crtc)
     xci->rotation = rep.rotation;
     xci->noutput = rep.nOutput;
     xci->outputs = (RROutput *) (xci + 1);
+    xci->rotations = rep.rotations;
     xci->npossible = rep.nPossibleOutput;
     xci->possible = (RROutput *) (xci->outputs + rep.nOutput);
 
