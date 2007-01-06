@@ -37,7 +37,9 @@
 #include <X11/extensions/Xrender.h>
 #include "Xrandrint.h"
 
-static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window);
+static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy,
+						  XExtDisplayInfo *info,
+						  Window window);
 
 Rotation XRRConfigRotations(XRRScreenConfiguration *config, Rotation *current_rotation)
 {
@@ -96,9 +98,10 @@ short XRRConfigCurrentRate (XRRScreenConfiguration *config)
  * Go get the screen configuration data and salt it away for future use; 
  * returns NULL if extension not supported
  */
-static XRRScreenConfiguration *_XRRValidateCache (Display *dpy, int screen)
+static XRRScreenConfiguration *_XRRValidateCache (Display *dpy, 
+						  XExtDisplayInfo *info,
+						  int screen)
 {
-    XExtDisplayInfo *info = XRRFindDisplay (dpy);
     XRRScreenConfiguration **configs;
     XRandRInfo *xrri;
 
@@ -107,7 +110,7 @@ static XRRScreenConfiguration *_XRRValidateCache (Display *dpy, int screen)
 	configs = xrri->config;
 
 	if (configs[screen] == NULL)
-	    configs[screen] = _XRRGetScreenInfo (dpy, RootWindow(dpy, screen));
+	    configs[screen] = _XRRGetScreenInfo (dpy, info, RootWindow(dpy, screen));
 	return configs[screen];
     } else {
 	return NULL;
@@ -118,9 +121,10 @@ static XRRScreenConfiguration *_XRRValidateCache (Display *dpy, int screen)
 Rotation XRRRotations(Display *dpy, int screen, Rotation *current_rotation)
 {
   XRRScreenConfiguration *config;
+  XExtDisplayInfo *info = XRRFindDisplay(dpy);
   Rotation cr;
   LockDisplay(dpy);
-  if ((config = _XRRValidateCache(dpy, screen))) {
+  if ((config = _XRRValidateCache(dpy, info, screen))) {
     *current_rotation = config->current_rotation;
     cr = config->rotations;
     UnlockDisplay(dpy);
@@ -137,10 +141,11 @@ Rotation XRRRotations(Display *dpy, int screen, Rotation *current_rotation)
 XRRScreenSize *XRRSizes(Display *dpy, int screen, int *nsizes)
 {
   XRRScreenConfiguration *config; 
+  XExtDisplayInfo *info = XRRFindDisplay(dpy);
   XRRScreenSize *sizes;
 
   LockDisplay(dpy);
-  if ((config = _XRRValidateCache(dpy, screen))) {
+  if ((config = _XRRValidateCache(dpy, info, screen))) {
     *nsizes = config->nsizes;
     sizes = config->sizes;
     UnlockDisplay(dpy);
@@ -156,10 +161,11 @@ XRRScreenSize *XRRSizes(Display *dpy, int screen, int *nsizes)
 short *XRRRates (Display *dpy, int screen, int sizeID, int *nrates)
 {
   XRRScreenConfiguration *config; 
+  XExtDisplayInfo *info = XRRFindDisplay(dpy);
   short *rates;
 
   LockDisplay(dpy);
-  if ((config = _XRRValidateCache(dpy, screen))) {
+  if ((config = _XRRValidateCache(dpy, info, screen))) {
     rates = XRRConfigRates (config, sizeID, nrates);
     UnlockDisplay(dpy);
     return rates;
@@ -175,10 +181,11 @@ short *XRRRates (Display *dpy, int screen, int sizeID, int *nrates)
 Time XRRTimes (Display *dpy, int screen, Time *config_timestamp)
 {
   XRRScreenConfiguration *config; 
+  XExtDisplayInfo *info = XRRFindDisplay(dpy);
   Time ts;
 
   LockDisplay(dpy);
-  if ((config = _XRRValidateCache(dpy, screen))) {
+  if ((config = _XRRValidateCache(dpy, info, screen))) {
       *config_timestamp = config->config_timestamp;
       ts = config->timestamp;
       UnlockDisplay(dpy);
@@ -190,9 +197,10 @@ Time XRRTimes (Display *dpy, int screen, Time *config_timestamp)
 }
 
 /* need a version that does not hold the display lock */
-static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window)
+static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy,
+						  XExtDisplayInfo *info,
+						  Window window)
 {
-    XExtDisplayInfo *info = XRRFindDisplay(dpy);
     xRRGetScreenInfoReply   rep;
     xRRGetScreenInfoReq	    *req;
     _XAsyncHandler 	    async;
@@ -207,9 +215,9 @@ static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window)
     XRandRInfo		    *xrri;
     Bool		    getting_version = False;
 
-    RRCheckExtension (dpy, info, 0);
-
     xrri = (XRandRInfo *) info->data;
+    if (!xrri)
+	return NULL;
 
     if (xrri->major_version == -1)
     {
@@ -337,9 +345,10 @@ static XRRScreenConfiguration *_XRRGetScreenInfo (Display *dpy, Window window)
 XRRScreenConfiguration *XRRGetScreenInfo (Display *dpy, Window window)
 {
     XRRScreenConfiguration *config;
+    XExtDisplayInfo *info = XRRFindDisplay(dpy);
     XRRFindDisplay(dpy);
     LockDisplay (dpy);
-    config = _XRRGetScreenInfo(dpy, window);
+    config = _XRRGetScreenInfo(dpy, info, window);
     UnlockDisplay (dpy);
     SyncHandle ();
     return config;
