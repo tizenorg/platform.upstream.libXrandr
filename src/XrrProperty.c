@@ -38,7 +38,7 @@ XRRListOutputProperties (Display *dpy, RROutput output, int *nprop)
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
     xRRListOutputPropertiesReply rep;
     xRRListOutputPropertiesReq	*req;
-    int				nbytes, nbytesRead, netbytes;
+    int				nbytes, nbytesRead, rbytes;
     int				i;
     xRRQueryVersionReq		*vreq;
     Atom			*props;
@@ -59,12 +59,12 @@ XRRListOutputProperties (Display *dpy, RROutput output, int *nprop)
     }
 
     if (rep.nAtoms) {
-	nbytes = rep.nAtoms * sizeof (Atom);
-	netbytes = rep.nAtoms << 2;
+	rbytes = rep.nAtoms * sizeof (Atom);
+	nbytes = rep.nAtoms << 2;
 
-	props = (Atom *) Xmalloc (nbytes);
+	props = (Atom *) Xmalloc (rbytes);
 	if (props == NULL) {
-	    _XEatData (dpy, netbytes);
+	    _XEatData (dpy, nbytes);
 	    UnlockDisplay (dpy);
 	    SyncHandle ();
 	    *nprop = 0;
@@ -86,7 +86,7 @@ XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property)
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
     xRRQueryOutputPropertyReply rep;
     xRRQueryOutputPropertyReq	*req;
-    int				nbytes, nbytesRead, netbytes;
+    int				rbytes, nbytes;
     int				i;
     xRRQueryVersionReq		*vreq;
     XRRPropertyInfo		*prop_info;
@@ -107,13 +107,12 @@ XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property)
     }
 
     if (rep.length) {
-	nbytes = rep.length * sizeof (long);
-	netbytes = rep.length << 2;
+	rbytes = sizeof (XRRPropertyInfo) + rep.length * sizeof (long);
+	nbytes = rep.length << 2;
 
-	prop_info = (XRRPropertyInfo *) Xmalloc (nbytes +
-						 sizeof (XRRPropertyInfo));
+	prop_info = (XRRPropertyInfo *) Xmalloc (rbytes);
 	if (prop_info == NULL) {
-	    _XEatData (dpy, netbytes);
+	    _XEatData (dpy, nbytes);
 	    UnlockDisplay (dpy);
 	    SyncHandle ();
 	    return NULL;
@@ -257,7 +256,7 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
     xRRGetOutputPropertyReply	rep;
     xRRGetOutputPropertyReq	*req;
-    int				nbytes, nbytesRead;
+    long    			nbytes, rbytes, nbytesRead;
     int				i;
     xRRQueryVersionReq		*vreq;
 
@@ -284,7 +283,6 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
 
     *prop = (unsigned char *) NULL;
     if (rep.propertyType != None) {
-	long nbytes, netbytes;
 	/*
 	 * One extra byte is malloced than is needed to contain the property
 	 * data, but this last byte is null terminated and convenient for
@@ -293,26 +291,27 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
 	 */
 	switch (rep.format) {
 	case 8:
-	    nbytes = netbytes = rep.nItems;
-	    if (nbytes + 1 > 0 &&
-		(*prop = (unsigned char *) Xmalloc ((unsigned)nbytes + 1)))
-		_XReadPad (dpy, (char *) *prop, netbytes);
+	    nbytes = rep.nItems;
+	    rbytes = rep.nItems + 1;
+	    if (rbytes > 0 &&
+		(*prop = (unsigned char *) Xmalloc ((unsigned)rbytes)))
+		_XReadPad (dpy, (char *) *prop, nbytes);
 	    break;
 
 	case 16:
-	    nbytes = rep.nItems * sizeof (short);
-	    netbytes = rep.nItems << 1;
-	    if (nbytes + 1 > 0 &&
-		(*prop = (unsigned char *) Xmalloc ((unsigned)nbytes + 1)))
-		_XRead16Pad (dpy, (short *) *prop, netbytes);
+	    nbytes = rep.nItems << 1;
+	    rbytes = rep.nItems * sizeof (short) + 1;
+	    if (rbytes > 0 &&
+		(*prop = (unsigned char *) Xmalloc ((unsigned)rbytes)))
+		_XRead16Pad (dpy, (short *) *prop, nbytes);
 	    break;
 
 	case 32:
-	    nbytes = rep.nItems * sizeof (long);
-	    netbytes = rep.nItems << 2;
-	    if (nbytes + 1 > 0 &&
-		(*prop = (unsigned char *) Xmalloc ((unsigned)nbytes + 1)))
-		_XRead32 (dpy, (long *) *prop, netbytes);
+	    nbytes = rep.nItems << 2;
+	    rbytes = rep.nItems * sizeof (long) + 1;
+	    if (rbytes > 0 &&
+		(*prop = (unsigned char *) Xmalloc ((unsigned)rbytes)))
+		_XRead32 (dpy, (long *) *prop, nbytes);
 	    break;
 
 	default:
@@ -320,18 +319,19 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
 	     * This part of the code should never be reached.  If it is,
 	     * the server sent back a property with an invalid format.
 	     */
-	    _XEatData(dpy, (unsigned long) netbytes);
+	    nbytes = rep.length << 2;
+	    _XEatData(dpy, (unsigned long) nbytes);
 	    UnlockDisplay(dpy);
 	    SyncHandle();
 	    return(BadImplementation);
 	}
 	if (! *prop) {
-	    _XEatData(dpy, (unsigned long) netbytes);
+	    _XEatData(dpy, (unsigned long) nbytes);
 	    UnlockDisplay(dpy);
 	    SyncHandle();
 	    return(BadAlloc);
 	}
-	(*prop)[nbytes] = '\0';
+	(*prop)[rbytes - 1] = '\0';
     }
 
     *actual_type = rep.propertyType;
