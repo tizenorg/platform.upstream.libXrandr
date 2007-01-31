@@ -106,24 +106,26 @@ XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property)
 	return NULL;
     }
 
-    if (rep.length) {
-	rbytes = sizeof (XRRPropertyInfo) + rep.length * sizeof (long);
-	nbytes = rep.length << 2;
+    rbytes = sizeof (XRRPropertyInfo) + rep.length * sizeof (long);
+    nbytes = rep.length << 2;
 
-	prop_info = (XRRPropertyInfo *) Xmalloc (rbytes);
-	if (prop_info == NULL) {
-	    _XEatData (dpy, nbytes);
-	    UnlockDisplay (dpy);
-	    SyncHandle ();
-	    return NULL;
-	}
-	prop_info->pending = rep.pending;
-	prop_info->range = rep.range;
-	prop_info->immutable = rep.immutable;
-	prop_info->num_values = rep.length;
+    prop_info = (XRRPropertyInfo *) Xmalloc (rbytes);
+    if (prop_info == NULL) {
+	_XEatData (dpy, nbytes);
+	UnlockDisplay (dpy);
+	SyncHandle ();
+	return NULL;
+    }
+
+    prop_info->pending = rep.pending;
+    prop_info->range = rep.range;
+    prop_info->immutable = rep.immutable;
+    prop_info->num_values = rep.length;
+    if (rep.length != 0) {
 	prop_info->values = (long *) (prop_info + 1);
-
 	_XRead32 (dpy, prop_info->values, nbytes);
+    } else {
+	prop_info->values = NULL;
     }
 
     UnlockDisplay (dpy);
