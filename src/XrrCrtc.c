@@ -253,6 +253,7 @@ XRRSetCrtcGamma (Display *dpy, RRCrtc crtc, XRRCrtcGamma *crtc_gamma)
     req->reqType = info->codes->major_opcode;
     req->randrReqType = X_RRSetCrtcGamma;
     req->crtc = crtc;
+    req->size = crtc_gamma->size;
     req->length += (crtc_gamma->size * 2 * 3 + 3) >> 2;
     /*
      * Note this assumes the structure was allocated with XRRAllocGamma,
