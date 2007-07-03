@@ -116,7 +116,7 @@ static Bool XRRWireToEvent(Display *dpy, XEvent *event, xEvent *wire)
 	    aevent->rotation = awire->rotation;
 	    aevent->x = awire->x;
 	    aevent->y = awire->y;
-	    aevent->width = awire->height;
+	    aevent->width = awire->width;
 	    aevent->height = awire->height;
 	    return True;
 	}
@@ -191,7 +191,7 @@ static Status XRREventToWire(Display *dpy, XEvent *event, xEvent *wire)
 	    awire->rotation = aevent->rotation;
 	    awire->x = aevent->x;
 	    awire->y = aevent->y;
-	    awire->width = aevent->height;
+	    awire->width = aevent->width;
 	    awire->height = aevent->height;
 	    return True;
 	}
