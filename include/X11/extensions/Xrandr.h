@@ -177,8 +177,6 @@ int XRRRootToScreen(Display *dpy, Window root);
  */
 
 
-XRRScreenConfiguration *XRRScreenConfig(Display *dpy, int screen);
-XRRScreenConfiguration *XRRConfig(Screen *screen);
 void XRRSelectInput(Display *dpy, Window window, int mask);
 
 /* 

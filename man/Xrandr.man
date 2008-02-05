@@ -90,11 +90,6 @@ int XRRRootToScreen\^(\^
 	Display *\fIdpy\fP, 
 	Window \fIroot\fP\^);
 .sp
-XRRScreenConfiguration *XRRScreenConfig\^(\^
-	Display *\fIdpy\fP, int \fIscreen\fP\^);
-.sp
-XRRScreenConfiguration *XRRConfig\^(\^Screen *\fIscreen\fP\^);
-.sp
 void XRRSelectInput\^(\^Display *\fIdpy\fP, Window \fIwindow\fP, int \fImask\fP\^);
 .sp
 /\(** 

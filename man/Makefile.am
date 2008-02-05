@@ -70,8 +70,6 @@ Xrandr_shadows =                            \
     XRRConfigCurrentConfiguration           \
     XRRConfigCurrentRate                    \
     XRRRootToScreen                         \
-    XRRScreenConfig                         \
-    XRRConfig                               \
     XRRSelectInput
 
 shadows.DONE:
