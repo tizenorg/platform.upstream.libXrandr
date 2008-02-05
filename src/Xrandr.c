@@ -36,8 +36,8 @@
 #include <X11/extensions/Xrender.h>
 #include "Xrandrint.h"
 
-XExtensionInfo XRRExtensionInfo;
-char XRRExtensionName[] = RANDR_NAME;
+_X_HIDDEN XExtensionInfo XRRExtensionInfo;
+_X_HIDDEN char XRRExtensionName[] = RANDR_NAME;
 
 static Bool     XRRWireToEvent(Display *dpy, XEvent *event, xEvent *wire);
 static Status   XRREventToWire(Display *dpy, XEvent *event, xEvent *wire);
@@ -210,7 +210,7 @@ static Status XRREventToWire(Display *dpy, XEvent *event, xEvent *wire)
     return False;
 }
 
-XExtDisplayInfo *
+_X_HIDDEN XExtDisplayInfo *
 XRRFindDisplay (Display *dpy)
 {
     XExtDisplayInfo *dpyinfo;
@@ -285,7 +285,7 @@ Bool XRRQueryExtension (Display *dpy, int *event_basep, int *error_basep)
     }
 }
 
-Bool
+_X_HIDDEN Bool
 _XRRHasRates (int major, int minor)
 {
     return major > 1 || (major == 1 && minor >= 1);
@@ -330,7 +330,7 @@ Status XRRQueryVersion (Display *dpy,
     return 1;
 }
 
-Bool
+_X_HIDDEN Bool
 _XRRVersionHandler (Display	    *dpy,
 			xReply	    *rep,
 			char	    *buf,
