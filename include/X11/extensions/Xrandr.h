@@ -29,6 +29,7 @@
 #define _XRANDR_H_
 
 #include <X11/extensions/randr.h>
+#include <X11/extensions/Xrender.h>
 
 #include <X11/Xfuncproto.h>
 
@@ -370,6 +371,22 @@ XRRSetCrtcGamma (Display *dpy, RRCrtc crtc, XRRCrtcGamma *gamma);
 
 void
 XRRFreeGamma (XRRCrtcGamma *gamma);
+
+/* Version 1.3 additions */
+
+void
+XRRSetCrtcTransform (Display	*dpy,
+		     RRCrtc	crtc, 
+		     XTransform	*transform,
+		     XTransform	*inverse);
+
+Status
+XRRGetCrtcTransform (Display	*dpy,
+		     RRCrtc	crtc,
+		     XTransform	*pendingTransform,
+		     XTransform	*pendingInverse,
+		     XTransform	*currentTransform,
+		     XTransform	*currentInverse);
 
 /* 
  * intended to take RRScreenChangeNotify,  or 

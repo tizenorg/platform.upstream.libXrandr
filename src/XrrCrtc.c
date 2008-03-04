@@ -270,3 +270,159 @@ XRRFreeGamma (XRRCrtcGamma *crtc_gamma)
 {
     Xfree (crtc_gamma);
 }
+
+/* Version 1.3 additions */
+
+void
+XRRSetCrtcTransform (Display	*dpy,
+		     RRCrtc	crtc, 
+		     XTransform	*transform,
+		     XTransform	*inverse)
+{
+    XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
+    xRRSetCrtcTransformReq  *req;
+
+    RRSimpleCheckExtension (dpy, info);
+
+    LockDisplay(dpy);
+    GetReq (RRSetCrtcTransform, req);
+    req->reqType = info->codes->major_opcode;
+    req->randrReqType = X_RRSetCrtcTransform;
+    req->crtc = crtc;
+
+    req->transform.matrix11 = transform->matrix[0][0];
+    req->transform.matrix12 = transform->matrix[0][1];
+    req->transform.matrix13 = transform->matrix[0][2];
+    req->transform.matrix21 = transform->matrix[1][0];
+    req->transform.matrix22 = transform->matrix[1][1];
+    req->transform.matrix23 = transform->matrix[1][2];
+    req->transform.matrix31 = transform->matrix[2][0];
+    req->transform.matrix32 = transform->matrix[2][1];
+    req->transform.matrix33 = transform->matrix[2][2];
+
+    req->inverse.matrix11 = inverse->matrix[0][0];
+    req->inverse.matrix12 = inverse->matrix[0][1];
+    req->inverse.matrix13 = inverse->matrix[0][2];
+    req->inverse.matrix21 = inverse->matrix[1][0];
+    req->inverse.matrix22 = inverse->matrix[1][1];
+    req->inverse.matrix23 = inverse->matrix[1][2];
+    req->inverse.matrix31 = inverse->matrix[2][0];
+    req->inverse.matrix32 = inverse->matrix[2][1];
+    req->inverse.matrix33 = inverse->matrix[2][2];
+    
+    UnlockDisplay (dpy);
+    SyncHandle ();
+}
+
+#define CrtcTransformExtra	(SIZEOF(xRRGetCrtcTransformReply) - 32)
+				
+static const xRenderTransform identity = {
+    0x10000, 0, 0,
+    0, 0x10000, 0,
+    0, 0, 0x10000,
+};
+
+static Bool
+_XRRHasTransform (int major, int minor)
+{
+    return major > 1 || (major == 1 && minor >= 3);
+}
+
+Status
+XRRGetCrtcTransform (Display	*dpy,
+		     RRCrtc	crtc,
+		     XTransform	*pendingTransform,
+		     XTransform	*pendingInverse,
+		     XTransform	*currentTransform,
+		     XTransform	*currentInverse)
+{
+    XExtDisplayInfo		*info = XRRFindDisplay(dpy);
+    XRandRInfo			*xrri;
+    xRRGetCrtcTransformReply	rep;
+    xRRGetCrtcTransformReq	*req;
+    int				major_version, minor_version;
+
+    RRCheckExtension (dpy, info, False);
+
+    if (!XRRQueryVersion (dpy, &major_version, &minor_version) || 
+	!_XRRHasTransform (major_version, minor_version))
+    {
+	/* For pre-1.3 servers, just report identity matrices everywhere */
+	rep.pendingTransform = identity;
+	rep.pendingInverse = identity;
+	rep.currentTransform = identity;
+	rep.currentInverse = identity;
+    }
+    else
+    {
+	LockDisplay (dpy);
+	GetReq (RRGetCrtcTransform, req);
+	req->reqType = info->codes->major_opcode;
+	req->randrReqType = X_RRGetCrtcTransform;
+	req->crtc = crtc;
+    
+	if (!_XReply (dpy, (xReply *) &rep, CrtcTransformExtra >> 2, xFalse))
+	{
+	    rep.pendingTransform = identity;
+	    rep.pendingInverse = identity;
+	    rep.currentTransform = identity;
+	    rep.currentInverse = identity;
+	}
+	UnlockDisplay (dpy);
+	SyncHandle ();
+    }
+
+    if (pendingTransform)
+    {
+	pendingTransform->matrix[0][0] = rep.pendingTransform.matrix11;
+	pendingTransform->matrix[0][1] = rep.pendingTransform.matrix12;
+	pendingTransform->matrix[0][2] = rep.pendingTransform.matrix13;
+	pendingTransform->matrix[1][0] = rep.pendingTransform.matrix21;
+	pendingTransform->matrix[1][1] = rep.pendingTransform.matrix22;
+	pendingTransform->matrix[1][2] = rep.pendingTransform.matrix23;
+	pendingTransform->matrix[2][0] = rep.pendingTransform.matrix31;
+	pendingTransform->matrix[2][1] = rep.pendingTransform.matrix32;
+	pendingTransform->matrix[2][2] = rep.pendingTransform.matrix33;
+    }
+    
+    if (pendingInverse)
+    {
+	pendingInverse->matrix[0][0] = rep.pendingInverse.matrix11;
+	pendingInverse->matrix[0][1] = rep.pendingInverse.matrix12;
+	pendingInverse->matrix[0][2] = rep.pendingInverse.matrix13;
+	pendingInverse->matrix[1][0] = rep.pendingInverse.matrix21;
+	pendingInverse->matrix[1][1] = rep.pendingInverse.matrix22;
+	pendingInverse->matrix[1][2] = rep.pendingInverse.matrix23;
+	pendingInverse->matrix[2][0] = rep.pendingInverse.matrix31;
+	pendingInverse->matrix[2][1] = rep.pendingInverse.matrix32;
+	pendingInverse->matrix[2][2] = rep.pendingInverse.matrix33;
+    }
+    
+    if (currentTransform)
+    {
+	currentTransform->matrix[0][0] = rep.currentTransform.matrix11;
+	currentTransform->matrix[0][1] = rep.currentTransform.matrix12;
+	currentTransform->matrix[0][2] = rep.currentTransform.matrix13;
+	currentTransform->matrix[1][0] = rep.currentTransform.matrix21;
+	currentTransform->matrix[1][1] = rep.currentTransform.matrix22;
+	currentTransform->matrix[1][2] = rep.currentTransform.matrix23;
+	currentTransform->matrix[2][0] = rep.currentTransform.matrix31;
+	currentTransform->matrix[2][1] = rep.currentTransform.matrix32;
+	currentTransform->matrix[2][2] = rep.currentTransform.matrix33;
+    }
+    
+    if (currentInverse)
+    {
+	currentInverse->matrix[0][0] = rep.currentInverse.matrix11;
+	currentInverse->matrix[0][1] = rep.currentInverse.matrix12;
+	currentInverse->matrix[0][2] = rep.currentInverse.matrix13;
+	currentInverse->matrix[1][0] = rep.currentInverse.matrix21;
+	currentInverse->matrix[1][1] = rep.currentInverse.matrix22;
+	currentInverse->matrix[1][2] = rep.currentInverse.matrix23;
+	currentInverse->matrix[2][0] = rep.currentInverse.matrix31;
+	currentInverse->matrix[2][1] = rep.currentInverse.matrix32;
+	currentInverse->matrix[2][2] = rep.currentInverse.matrix33;
+    }
+    
+    return True;
+}
