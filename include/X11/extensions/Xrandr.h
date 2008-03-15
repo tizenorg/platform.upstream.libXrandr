@@ -378,17 +378,34 @@ void
 XRRSetCrtcTransform (Display	*dpy,
 		     RRCrtc	crtc, 
 		     XTransform	*transform,
-		     XTransform	*inverse);
+		     XTransform	*inverse,
+		     char	*filter,
+		     XFixed	*params,
+		     int	nparams);
 
+typedef struct _XRRCrtcTransformAttributes {
+    XTransform	pendingTransform;
+    XTransform	pendingInverse;
+    char	*pendingFilter;
+    int		pendingNparams;
+    XFixed	*pendingParams;
+    XTransform	currentTransform;
+    XTransform	currentInverse;
+    char	*currentFilter;
+    int		currentNparams;
+    XFixed	*currentParams;
+} XRRCrtcTransformAttributes;
+
+/*
+ * Get current crtc transforms and filters.
+ * Pass *attributes to XFree to free
+ */
 Status
 XRRGetCrtcTransform (Display	*dpy,
 		     RRCrtc	crtc,
-		     XTransform	*pendingTransform,
-		     XTransform	*pendingInverse,
-		     XTransform	*currentTransform,
-		     XTransform	*currentInverse);
+		     XRRCrtcTransformAttributes **attributes);
 
-/* 
+/*
  * intended to take RRScreenChangeNotify,  or 
  * ConfigureNotify (on the root window)
  * returns 1 if it is an event type it understands, 0 if not
