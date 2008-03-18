@@ -311,7 +311,6 @@ void
 XRRSetCrtcTransform (Display	*dpy,
 		     RRCrtc	crtc, 
 		     XTransform	*transform,
-		     XTransform	*inverse,
 		     char	*filter,
 		     XFixed	*params,
 		     int	nparams)
@@ -329,7 +328,6 @@ XRRSetCrtcTransform (Display	*dpy,
     req->crtc = crtc;
 
     xRenderTransform_from_XTransform (&req->transform, transform);
-    xRenderTransform_from_XTransform (&req->inverse, inverse);
 
     req->nbytesFilter = nbytes;
     req->length += ((nbytes + 3) >> 2) + nparams;
@@ -377,11 +375,9 @@ XRRGetCrtcTransform (Display	*dpy,
     {
 	/* For pre-1.3 servers, just report identity matrices everywhere */
 	rep.pendingTransform = identity;
-	rep.pendingInverse = identity;
 	rep.pendingNbytesFilter = 0;
 	rep.pendingNparamsFilter = 0;
 	rep.currentTransform = identity;
-	rep.currentInverse = identity;
 	rep.currentNbytesFilter = 0;
 	rep.currentNparamsFilter = 0;
     }
@@ -396,11 +392,9 @@ XRRGetCrtcTransform (Display	*dpy,
 	if (!_XReply (dpy, (xReply *) &rep, CrtcTransformExtra >> 2, xFalse))
 	{
 	    rep.pendingTransform = identity;
-	    rep.pendingInverse = identity;
 	    rep.pendingNbytesFilter = 0;
 	    rep.pendingNparamsFilter = 0;
 	    rep.currentTransform = identity;
-	    rep.currentInverse = identity;
 	    rep.currentNbytesFilter = 0;
 	    rep.currentNparamsFilter = 0;
 	}
@@ -432,9 +426,7 @@ XRRGetCrtcTransform (Display	*dpy,
 	return False;
     }
     XTransform_from_xRenderTransform (&attr->pendingTransform, &rep.pendingTransform);
-    XTransform_from_xRenderTransform (&attr->pendingInverse, &rep.pendingInverse);
     XTransform_from_xRenderTransform (&attr->currentTransform, &rep.currentTransform);
-    XTransform_from_xRenderTransform (&attr->currentInverse, &rep.currentInverse);
 
     attr->pendingParams = (XFixed *) (attr + 1);
     attr->currentParams = attr->pendingParams + rep.pendingNparamsFilter;

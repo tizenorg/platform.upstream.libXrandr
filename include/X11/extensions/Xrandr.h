@@ -378,19 +378,16 @@ void
 XRRSetCrtcTransform (Display	*dpy,
 		     RRCrtc	crtc, 
 		     XTransform	*transform,
-		     XTransform	*inverse,
 		     char	*filter,
 		     XFixed	*params,
 		     int	nparams);
 
 typedef struct _XRRCrtcTransformAttributes {
     XTransform	pendingTransform;
-    XTransform	pendingInverse;
     char	*pendingFilter;
     int		pendingNparams;
     XFixed	*pendingParams;
     XTransform	currentTransform;
-    XTransform	currentInverse;
     char	*currentFilter;
     int		currentNparams;
     XFixed	*currentParams;
