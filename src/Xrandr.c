@@ -272,13 +272,15 @@ int XRRRootToScreen(Display *dpy, Window root)
 }
 
 
-Bool XRRQueryExtension (Display *dpy, int *event_basep, int *error_basep)
+Bool XRRQueryExtension (Display *dpy,
+			int *event_base_return,
+			int *error_base_return)
 {
   XExtDisplayInfo *info = XRRFindDisplay (dpy);
 
     if (XextHasExtension(info)) {
-	*event_basep = info->codes->first_event;
-	*error_basep = info->codes->first_error;
+	*event_base_return = info->codes->first_event;
+	*error_base_return = info->codes->first_error;
 	return True;
     } else {
 	return False;
