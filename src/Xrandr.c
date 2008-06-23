@@ -395,9 +395,11 @@ int XRRUpdateConfiguration(XEvent *event)
     if (event->type == ConfigureNotify) {
 	rcevent = (XConfigureEvent *) event;
 	snum = XRRRootToScreen(dpy, rcevent->window);
-	dpy->screens[snum].width   = rcevent->width;
-	dpy->screens[snum].height  = rcevent->height;
-	return 1;
+	if (snum != -1) {
+	    dpy->screens[snum].width   = rcevent->width;
+	    dpy->screens[snum].height  = rcevent->height;
+	    return 1;
+	}
     }
 
     info = XRRFindDisplay(dpy);
