@@ -1,7 +1,4 @@
 /*
- * $XFree86: xc/lib/Xrandr/Xrandrint.h,v 1.2 2001/06/07 15:33:43 keithp Exp $
- *
- *
  * Copyright © 2000, Compaq Computer Corporation, 
  * Copyright © 2002, Hewlett Packard, Inc.
  *

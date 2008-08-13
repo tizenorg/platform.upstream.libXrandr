@@ -1,6 +1,4 @@
 /*
- * $XFree86: xc/lib/Xrandr/Xrandr.c,v 1.13tsi Exp $
- *
  * Copyright © 2000 Compaq Computer Corporation, Inc.
  * Copyright © 2002 Hewlett Packard Company, Inc.
  *
