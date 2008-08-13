@@ -92,12 +92,12 @@ static Bool XRRWireToEvent(Display *dpy, XEvent *event, xEvent *wire)
 	aevent->serial = _XSetLastRequestRead(dpy, (xGenericReply *) wire);
 	aevent->send_event = (awire->type & 0x80) != 0;
 	aevent->display = dpy;
-	aevent->window = awire->window;
 	aevent->subtype = awire->subCode;
 	switch (aevent->subtype) {
 	case RRNotify_OutputChange: {
 	    XRROutputChangeNotifyEvent *aevent = (XRROutputChangeNotifyEvent *) event;
 	    xRROutputChangeNotifyEvent *awire = (xRROutputChangeNotifyEvent *) wire;
+	    aevent->window = awire->window;
 	    aevent->output = awire->output;
 	    aevent->crtc = awire->crtc;
 	    aevent->mode = awire->mode;
@@ -109,6 +109,7 @@ static Bool XRRWireToEvent(Display *dpy, XEvent *event, xEvent *wire)
 	case RRNotify_CrtcChange: {
 	    XRRCrtcChangeNotifyEvent *aevent = (XRRCrtcChangeNotifyEvent *) event;
 	    xRRCrtcChangeNotifyEvent *awire = (xRRCrtcChangeNotifyEvent *) wire;
+	    aevent->window = awire->window;
 	    aevent->crtc = awire->crtc;
 	    aevent->mode = awire->mode;
 	    aevent->rotation = awire->rotation;
@@ -121,6 +122,7 @@ static Bool XRRWireToEvent(Display *dpy, XEvent *event, xEvent *wire)
 	case RRNotify_OutputProperty: {
 	    XRROutputPropertyNotifyEvent *aevent = (XRROutputPropertyNotifyEvent *) event;
 	    xRROutputPropertyNotifyEvent *awire = (xRROutputPropertyNotifyEvent *) wire;
+	    aevent->window = awire->window;
 	    aevent->output = awire->output;
 	    aevent->property = awire->atom;
 	    aevent->timestamp = awire->timestamp;
