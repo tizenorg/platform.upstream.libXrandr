@@ -454,6 +454,7 @@ XRRGetCrtcTransform (Display	*dpy,
 	e += 4;
 	attr->currentParams[p] = (XFixed) f;
     }
+    attr->currentNparams = rep.currentNparamsFilter;
 
     if (extra)
 	XFree (extra);
