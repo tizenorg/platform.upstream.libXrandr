@@ -378,6 +378,11 @@ XRRFreeGamma (XRRCrtcGamma *gamma);
  */
 int XRRUpdateConfiguration(XEvent *event);
 
+/* Version 1.3 additions */
+
+XRRScreenResources *
+XRRGetScreenResourcesCurrent (Display *dpy, Window window);
+
 _XFUNCPROTOEND
 
 #endif /* _XRANDR_H_ */

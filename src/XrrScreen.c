@@ -32,8 +32,12 @@
 #include <X11/extensions/Xrender.h>
 #include "Xrandrint.h"
 
-XRRScreenResources *
-XRRGetScreenResources (Display *dpy, Window window)
+/*
+ * this is cheating on the knowledge that the two requests are identical
+ * but for the request number.
+ */
+static XRRScreenResources *
+doGetScreenResources (Display *dpy, Window window, int poll)
 {
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
     xRRGetScreenResourcesReply  rep;
@@ -75,7 +79,8 @@ XRRGetScreenResources (Display *dpy, Window window)
 
     GetReq (RRGetScreenResources, req);
     req->reqType = info->codes->major_opcode;
-    req->randrReqType = X_RRGetScreenResources;
+    req->randrReqType = poll ? X_RRGetScreenResources
+			     : X_RRGetScreenResourcesCurrent;
     req->window = window;
 
     if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
@@ -185,6 +190,18 @@ XRRGetScreenResources (Display *dpy, Window window)
     UnlockDisplay (dpy);
     SyncHandle();
     return (XRRScreenResources *) xrsr;
+}
+
+XRRScreenResources *
+XRRGetScreenResources(Display *dpy, Window window)
+{
+    return doGetScreenResources(dpy, window, 1);
+}
+
+XRRScreenResources *
+XRRGetScreenResourcesCurrent(Display *dpy, Window window)
+{
+    return doGetScreenResources(dpy, window, 0);
 }
 
 void
