@@ -444,6 +444,7 @@ XRRGetCrtcTransform (Display	*dpy,
 	e += 4;
 	attr->pendingParams[p] = (XFixed) f;
     }
+    attr->pendingNparams = rep.pendingNparamsFilter;
 
     memcpy (attr->currentFilter, e, rep.currentNbytesFilter);
     attr->currentFilter[rep.currentNbytesFilter] = '\0';
