@@ -412,6 +412,34 @@ XRRGetCrtcTransform (Display	*dpy,
  */
 int XRRUpdateConfiguration(XEvent *event);
 
+typedef struct _XRRPanning {
+    Time            timestamp;
+    unsigned int left;
+    unsigned int top;
+    unsigned int width;
+    unsigned int height;
+    unsigned int track_left;
+    unsigned int track_top;
+    unsigned int track_width;
+    unsigned int track_height;
+    int          border_left;
+    int          border_top;
+    int          border_right;
+    int          border_bottom;
+} XRRPanning;
+
+XRRPanning *
+XRRGetPanning (Display *dpy, XRRScreenResources *resources, RRCrtc crtc);
+
+void
+XRRFreePanning (XRRPanning *panning);
+
+Status
+XRRSetPanning (Display *dpy,
+	       XRRScreenResources *resources,
+	       RRCrtc crtc,
+	       XRRPanning *panning);
+
 _XFUNCPROTOEND
 
 #endif /* _XRANDR_H_ */

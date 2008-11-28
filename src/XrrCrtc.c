@@ -463,3 +463,100 @@ XRRGetCrtcTransform (Display	*dpy,
 
     return True;
 }
+
+XRRPanning *
+XRRGetPanning (Display *dpy, XRRScreenResources *resources, RRCrtc crtc)
+{
+    XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
+    xRRGetPanningReply	    rep;
+    xRRGetPanningReq	    *req;
+    XRRPanning		    *xp;
+
+    RRCheckExtension (dpy, info, 0);
+
+    LockDisplay (dpy);
+    GetReq (RRGetPanning, req);
+    req->reqType         = info->codes->major_opcode;
+    req->randrReqType    = X_RRGetPanning;
+    req->crtc            = crtc;
+    req->configTimestamp = resources->configTimestamp;
+
+    if (!_XReply (dpy, (xReply *) &rep, 1, xFalse))
+    {
+	UnlockDisplay (dpy);
+	SyncHandle ();
+	return NULL;
+    }
+
+    if (! (xp = (XRRPanning *) Xmalloc(sizeof(XRRPanning))) ) {
+	_XEatData (dpy, sizeof(XRRPanning));
+	UnlockDisplay (dpy);
+	SyncHandle ();
+	return NULL;
+    }
+
+    xp->timestamp     = rep.timestamp;
+    xp->left          = rep.left;
+    xp->top           = rep.top;
+    xp->width         = rep.width;
+    xp->height        = rep.height;
+    xp->track_left    = rep.track_left;
+    xp->track_top     = rep.track_top;
+    xp->track_width   = rep.track_width;
+    xp->track_height  = rep.track_height;
+    xp->border_left   = rep.border_left;
+    xp->border_top    = rep.border_top;
+    xp->border_right  = rep.border_right;
+    xp->border_bottom = rep.border_bottom;
+
+    UnlockDisplay (dpy);
+    SyncHandle ();
+    return (XRRPanning *) xp;
+}
+
+void
+XRRFreePanning (XRRPanning *panning)
+{
+    Xfree (panning);
+}
+
+Status
+XRRSetPanning (Display *dpy,
+               XRRScreenResources *resources,
+               RRCrtc crtc,
+               XRRPanning *panning)
+{
+    XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
+    xRRSetPanningReply      rep;
+    xRRSetPanningReq	    *req;
+    int			    i;
+
+    RRCheckExtension (dpy, info, 0);
+
+    LockDisplay(dpy);
+    GetReq (RRSetPanning, req);
+    req->reqType       = info->codes->major_opcode;
+    req->randrReqType  = X_RRSetPanning;
+    req->crtc          = crtc;
+    req->timestamp     = panning->timestamp;
+    req->configTimestamp = resources->configTimestamp;
+    req->left          = panning->left;
+    req->top           = panning->top;
+    req->width         = panning->width;
+    req->height        = panning->height;
+    req->track_left    = panning->track_left;
+    req->track_top     = panning->track_top;
+    req->track_width   = panning->track_width;
+    req->track_height  = panning->track_height;
+    req->border_left   = panning->border_left;
+    req->border_top    = panning->border_top;
+    req->border_right  = panning->border_right;
+    req->border_bottom = panning->border_bottom;
+
+    if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
+	rep.status = RRSetConfigFailed;
+    UnlockDisplay (dpy);
+    SyncHandle ();
+    return rep.status;
+}
+
