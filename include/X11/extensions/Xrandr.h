@@ -29,6 +29,7 @@
 #define _XRANDR_H_
 
 #include <X11/extensions/randr.h>
+#include <X11/extensions/Xrender.h>
 
 #include <X11/Xfuncproto.h>
 
@@ -371,17 +372,45 @@ XRRSetCrtcGamma (Display *dpy, RRCrtc crtc, XRRCrtcGamma *gamma);
 void
 XRRFreeGamma (XRRCrtcGamma *gamma);
 
-/* 
+/* Version 1.3 additions */
+
+XRRScreenResources *
+XRRGetScreenResourcesCurrent (Display *dpy, Window window);
+
+void
+XRRSetCrtcTransform (Display	*dpy,
+		     RRCrtc	crtc, 
+		     XTransform	*transform,
+		     char	*filter,
+		     XFixed	*params,
+		     int	nparams);
+
+typedef struct _XRRCrtcTransformAttributes {
+    XTransform	pendingTransform;
+    char	*pendingFilter;
+    int		pendingNparams;
+    XFixed	*pendingParams;
+    XTransform	currentTransform;
+    char	*currentFilter;
+    int		currentNparams;
+    XFixed	*currentParams;
+} XRRCrtcTransformAttributes;
+
+/*
+ * Get current crtc transforms and filters.
+ * Pass *attributes to XFree to free
+ */
+Status
+XRRGetCrtcTransform (Display	*dpy,
+		     RRCrtc	crtc,
+		     XRRCrtcTransformAttributes **attributes);
+
+/*
  * intended to take RRScreenChangeNotify,  or 
  * ConfigureNotify (on the root window)
  * returns 1 if it is an event type it understands, 0 if not
  */
 int XRRUpdateConfiguration(XEvent *event);
-
-/* Version 1.3 additions */
-
-XRRScreenResources *
-XRRGetScreenResourcesCurrent (Display *dpy, Window window);
 
 _XFUNCPROTOEND
 
