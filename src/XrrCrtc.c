@@ -479,7 +479,6 @@ XRRGetPanning (Display *dpy, XRRScreenResources *resources, RRCrtc crtc)
     req->reqType         = info->codes->major_opcode;
     req->randrReqType    = X_RRGetPanning;
     req->crtc            = crtc;
-    req->configTimestamp = resources->configTimestamp;
 
     if (!_XReply (dpy, (xReply *) &rep, 1, xFalse))
     {
@@ -539,7 +538,6 @@ XRRSetPanning (Display *dpy,
     req->randrReqType  = X_RRSetPanning;
     req->crtc          = crtc;
     req->timestamp     = panning->timestamp;
-    req->configTimestamp = resources->configTimestamp;
     req->left          = panning->left;
     req->top           = panning->top;
     req->width         = panning->width;
