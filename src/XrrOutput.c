@@ -1,5 +1,6 @@
 /*
  * Copyright © 2006 Keith Packard
+ * Copyright © 2008 Red Hat, Inc.
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -128,4 +129,65 @@ void
 XRRFreeOutputInfo (XRROutputInfo *outputInfo)
 {
     Xfree (outputInfo);
+}
+
+static Bool
+_XRRHasOutputPrimary (int major, int minor)
+{
+    return major > 1 || (major == 1 && minor >= 3);
+}
+
+void
+XRRSetOutputPrimary(Display *dpy, Window window, RROutput output)
+{
+    XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
+    xRRSetOutputPrimaryReq  *req;
+    int			    i;
+    int			    major_version, minor_version;
+
+    RRCheckExtension (dpy, info, 0);
+
+    if (!XRRQueryVersion (dpy, &major_version, &minor_version) || 
+	!_XRRHasOutputPrimary (major_version, minor_version))
+	return;
+
+    LockDisplay(dpy);
+    GetReq (RRSetOutputPrimary, req);
+    req->reqType       = info->codes->major_opcode;
+    req->randrReqType  = X_RRSetOutputPrimary;
+    req->window        = window;
+    req->output	       = output;
+
+    UnlockDisplay (dpy);
+    SyncHandle ();
+}
+
+RROutput
+XRRGetOutputPrimary(Display *dpy, Window window)
+{
+    XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
+    xRRGetOutputPrimaryReq  *req;
+    xRRGetOutputPrimaryReply rep;
+    int			    i;
+    int			    major_version, minor_version;
+
+    RRCheckExtension (dpy, info, 0);
+
+    if (!XRRQueryVersion (dpy, &major_version, &minor_version) || 
+	!_XRRHasOutputPrimary (major_version, minor_version))
+	return None;
+
+    LockDisplay(dpy);
+    GetReq (RRSetOutputPrimary, req);
+    req->reqType	= info->codes->major_opcode;
+    req->randrReqType	= X_RRGetOutputProperty;
+    req->window		= window;
+
+    if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
+	rep.output = None;
+	
+    UnlockDisplay(dpy);
+    SyncHandle();
+
+    return rep.output;
 }
