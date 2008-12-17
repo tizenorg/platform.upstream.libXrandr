@@ -41,7 +41,7 @@ XRRListOutputProperties (Display *dpy, RROutput output, int *nprop)
     int				nbytes, nbytesRead, rbytes;
     int				i;
     xRRQueryVersionReq		*vreq;
-    Atom			*props;
+    Atom			*props = NULL;
 
     RRCheckExtension (dpy, info, 0);
 
