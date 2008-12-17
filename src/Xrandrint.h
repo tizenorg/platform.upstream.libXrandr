@@ -97,4 +97,7 @@ _XRRVersionHandler (Display	*dpy,
 		    int		len,
 		    XPointer    data);
 
+_X_HIDDEN Bool
+_XRRHasRates (int major, int minor);
+
 #endif /* _XRANDRINT_H_ */
