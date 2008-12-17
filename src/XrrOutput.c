@@ -145,7 +145,7 @@ XRRSetOutputPrimary(Display *dpy, Window window, RROutput output)
     int			    i;
     int			    major_version, minor_version;
 
-    RRCheckExtension (dpy, info, 0);
+    RRSimpleCheckExtension (dpy, info);
 
     if (!XRRQueryVersion (dpy, &major_version, &minor_version) || 
 	!_XRRHasOutputPrimary (major_version, minor_version))
