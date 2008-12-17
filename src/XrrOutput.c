@@ -178,7 +178,7 @@ XRRGetOutputPrimary(Display *dpy, Window window)
 	return None;
 
     LockDisplay(dpy);
-    GetReq (RRSetOutputPrimary, req);
+    GetReq (RRGetOutputPrimary, req);
     req->reqType	= info->codes->major_opcode;
     req->randrReqType	= X_RRGetOutputProperty;
     req->window		= window;
