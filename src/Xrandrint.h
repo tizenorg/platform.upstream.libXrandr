@@ -35,8 +35,7 @@
 #include <X11/extensions/randr.h>
 #include <X11/extensions/randrproto.h>
 
-extern XExtensionInfo XrandrExtensionInfo;
-extern char XrandrExtensionName[];
+extern char XRRExtensionName[];
 
 #define RRCheckExtension(dpy,i,val) \
   XextCheckExtension (dpy, i, XRRExtensionName, val)
@@ -87,8 +86,6 @@ typedef struct _randrVersionState {
     int		    major_version;
     int		    minor_version;
 } _XRRVersionState;
-
-extern char XRRExtensionName[];
 
 Bool
 _XRRVersionHandler (Display	*dpy,

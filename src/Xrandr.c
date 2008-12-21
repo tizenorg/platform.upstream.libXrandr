@@ -34,7 +34,7 @@
 #include <X11/extensions/Xrender.h>
 #include "Xrandrint.h"
 
-_X_HIDDEN XExtensionInfo XRRExtensionInfo;
+static XExtensionInfo XRRExtensionInfo;
 _X_HIDDEN char XRRExtensionName[] = RANDR_NAME;
 
 static Bool     XRRWireToEvent(Display *dpy, XEvent *event, xEvent *wire);
