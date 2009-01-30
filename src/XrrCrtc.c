@@ -39,10 +39,9 @@ XRRGetCrtcInfo (Display *dpy, XRRScreenResources *resources, RRCrtc crtc)
     xRRGetCrtcInfoReply	    rep;
     xRRGetCrtcInfoReq	    *req;
     int			    nbytes, nbytesRead, rbytes;
-    int			    i;
     XRRCrtcInfo		    *xci;
 
-    RRCheckExtension (dpy, info, 0);
+    RRCheckExtension (dpy, info, NULL);
 
     LockDisplay (dpy);
     GetReq (RRGetCrtcInfo, req);
@@ -128,7 +127,6 @@ XRRSetCrtcConfig (Display *dpy,
     XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
     xRRSetCrtcConfigReply   rep;
     xRRSetCrtcConfigReq	    *req;
-    int			    i;
 
     RRCheckExtension (dpy, info, 0);
 
@@ -159,7 +157,6 @@ XRRGetCrtcGammaSize (Display *dpy, RRCrtc crtc)
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
     xRRGetCrtcGammaSizeReply	rep;
     xRRGetCrtcGammaSizeReq	*req;
-    int				i;
 
     RRCheckExtension (dpy, info, 0);
 
@@ -182,12 +179,11 @@ XRRGetCrtcGamma (Display *dpy, RRCrtc crtc)
     XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
     xRRGetCrtcGammaReply    rep;
     xRRGetCrtcGammaReq	    *req;
-    int			    i;
     XRRCrtcGamma	    *crtc_gamma;
     long    		    nbytes;
     long    		    nbytesRead;
 
-    RRCheckExtension (dpy, info, 0);
+    RRCheckExtension (dpy, info, NULL);
 
     LockDisplay(dpy);
     GetReq (RRGetCrtcGamma, req);
@@ -358,7 +354,6 @@ XRRGetCrtcTransform (Display	*dpy,
 		     XRRCrtcTransformAttributes **attributes)
 {
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
-    XRandRInfo			*xrri;
     xRRGetCrtcTransformReply	rep;
     xRRGetCrtcTransformReq	*req;
     int				major_version, minor_version;
@@ -472,7 +467,7 @@ XRRGetPanning (Display *dpy, XRRScreenResources *resources, RRCrtc crtc)
     xRRGetPanningReq	    *req;
     XRRPanning		    *xp;
 
-    RRCheckExtension (dpy, info, 0);
+    RRCheckExtension (dpy, info, NULL);
 
     LockDisplay (dpy);
     GetReq (RRGetPanning, req);
@@ -528,7 +523,6 @@ XRRSetPanning (Display *dpy,
     XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
     xRRSetPanningReply      rep;
     xRRSetPanningReq	    *req;
-    int			    i;
 
     RRCheckExtension (dpy, info, 0);
 

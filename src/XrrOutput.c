@@ -42,11 +42,9 @@ XRRGetOutputInfo (Display *dpy, XRRScreenResources *resources, RROutput output)
     xRRGetOutputInfoReply	rep;
     xRRGetOutputInfoReq		*req;
     int				nbytes, nbytesRead, rbytes;
-    int				i;
-    xRRQueryVersionReq		*vreq;
     XRROutputInfo		*xoi;
 
-    RRCheckExtension (dpy, info, 0);
+    RRCheckExtension (dpy, info, NULL);
 
     LockDisplay (dpy);
     GetReq (RRGetOutputInfo, req);
@@ -142,7 +140,6 @@ XRRSetOutputPrimary(Display *dpy, Window window, RROutput output)
 {
     XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
     xRRSetOutputPrimaryReq  *req;
-    int			    i;
     int			    major_version, minor_version;
 
     RRSimpleCheckExtension (dpy, info);
@@ -168,7 +165,6 @@ XRRGetOutputPrimary(Display *dpy, Window window)
     XExtDisplayInfo	    *info = XRRFindDisplay(dpy);
     xRRGetOutputPrimaryReq  *req;
     xRRGetOutputPrimaryReply rep;
-    int			    i;
     int			    major_version, minor_version;
 
     RRCheckExtension (dpy, info, 0);

@@ -232,7 +232,7 @@ XRRFindDisplay (Display *dpy)
 	dpyinfo = XextAddDisplay (&XRRExtensionInfo, dpy, 
 				  XRRExtensionName,
 				  &rr_extension_hooks,
-				  RRNumberEvents, 0);
+				  RRNumberEvents, NULL);
 	numscreens = ScreenCount(dpy);
 	xrri = Xmalloc (sizeof(XRandRInfo) + 
 				 sizeof(char *) * numscreens);

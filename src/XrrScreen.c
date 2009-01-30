@@ -53,7 +53,7 @@ doGetScreenResources (Display *dpy, Window window, int poll)
     Bool			getting_version = False;
     XRandRInfo			*xrri;
 
-    RRCheckExtension (dpy, info, 0);
+    RRCheckExtension (dpy, info, NULL);
 
     LockDisplay (dpy);
     xrri = (XRandRInfo *) info->data;
