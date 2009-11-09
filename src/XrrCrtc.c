@@ -167,7 +167,7 @@ XRRGetCrtcGammaSize (Display *dpy, RRCrtc crtc)
     req->crtc = crtc;
 
     if (!_XReply (dpy, (xReply *) &rep, 0, xFalse))
-	rep.status = RRSetConfigFailed;
+	rep.size = 0;
     UnlockDisplay (dpy);
     SyncHandle ();
     return rep.size;
