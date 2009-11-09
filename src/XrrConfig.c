@@ -409,6 +409,7 @@ Status XRRSetScreenConfigAndRate (Display *dpy,
     
     (void) _XReply (dpy, (xReply *) &rep, 0, xTrue);
 
+    /* actually .errorCode in struct xError */
     if (rep.status == RRSetConfigSuccess) {
       /* if we succeed, set our view of reality to what we set it to */
       config->config_timestamp = rep.newConfigTimestamp;
