@@ -25,7 +25,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xrandr.pc
 
 MAINTAINERCLEANFILES = ChangeLog INSTALL
-EXTRA_DIST = xrandr.pc.in 
 
 .PHONY: ChangeLog INSTALL
 
