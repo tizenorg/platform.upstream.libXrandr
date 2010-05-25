@@ -105,7 +105,7 @@ static XRRScreenConfiguration *_XRRValidateCache (Display *dpy,
     XRRScreenConfiguration **configs;
     XRandRInfo *xrri;
 
-    if (XextHasExtension(info)) {
+    if ((screen >= 0) && (screen < ScreenCount(dpy)) && XextHasExtension(info)) {
 	xrri = (XRandRInfo *) info->data;
 	configs = xrri->config;
 
