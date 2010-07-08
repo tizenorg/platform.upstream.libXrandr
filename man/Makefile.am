@@ -28,9 +28,9 @@ LIB_MAN_DIR_SUFFIX = $(LIB_MAN_DIR:@mandir@/man%=%)
 libman_PRE = Xrandr.man
 
 libman_DATA = $(libman_PRE:man=@LIB_MAN_SUFFIX@) \
-	      $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@)
+	      $(Xrandr_shadowmen)
 
-BUILT_SOURCES = shadows.DONE
+BUILT_SOURCES = $(Xrandr_shadowmen)
 
 EXTRA_DIST = $(libman_PRE)
 
@@ -59,8 +59,6 @@ Xrandr_shadows =                            \
     XRRRootToScreen                         \
     XRRSelectInput
 
-shadows.DONE:
-	-rm -f $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@)
-	(for i in $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@) ; do \
-	 echo .so man$(LIB_MAN_DIR_SUFFIX)/Xrandr.$(LIB_MAN_SUFFIX) > $$i; \
-	 done)
+Xrandr_shadowmen = $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@)
+$(Xrandr_shadowmen):
+	$(AM_V_GEN)echo ".so man$(LIB_MAN_DIR_SUFFIX)/Xrandr.$(LIB_MAN_SUFFIX)" > $@
