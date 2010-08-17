@@ -23,42 +23,33 @@
 
 libmandir = $(LIB_MAN_DIR)
 
-LIB_MAN_DIR_SUFFIX = $(LIB_MAN_DIR:@mandir@/man%=%)
+libman_PRE =				\
+	Xrandr.man			\
+	$(Xrandr_shadows:=.man)
 
-libman_PRE = Xrandr.man
+Xrandr_shadows =			\
+	XRRQueryExtension		\
+	XRRQueryVersion			\
+	XRRGetScreenInfo		\
+	XRRFreeScreenConfigInfo		\
+	XRRSetScreenConfig		\
+	XRRSetScreenConfigAndRate	\
+	XRRConfigRotations		\
+	XRRConfigTimes			\
+	XRRConfigSizes			\
+	XRRConfigRates			\
+	XRRConfigCurrentConfiguration	\
+	XRRConfigCurrentRate		\
+	XRRRootToScreen			\
+	XRRSelectInput
 
-libman_DATA = $(libman_PRE:man=@LIB_MAN_SUFFIX@) \
-	      $(Xrandr_shadowmen)
-
-BUILT_SOURCES = $(Xrandr_shadowmen)
+libman_DATA = $(libman_PRE:man=@LIB_MAN_SUFFIX@)
 
 EXTRA_DIST = $(libman_PRE)
-
-CLEANFILES = $(libman_DATA) $(BUILT_SOURCES)
+CLEANFILES = $(libman_DATA)
 
 SUFFIXES = .$(LIB_MAN_SUFFIX) .man
 
+# String replacements in MAN_SUBSTS now come from xorg-macros.m4 via configure
 .man.$(LIB_MAN_SUFFIX):
 	$(AM_V_GEN)$(SED) $(MAN_SUBSTS) < $< > $@
-
-# Generate man page shadow files (Replaces InstallManPageAliases from Imake)
-
-Xrandr_shadows =                            \
-    XRRQueryExtension                       \
-    XRRQueryVersion                         \
-    XRRGetScreenInfo                        \
-    XRRFreeScreenConfigInfo                 \
-    XRRSetScreenConfig                      \
-    XRRSetScreenConfigAndRate               \
-    XRRConfigRotations                      \
-    XRRConfigTimes                          \
-    XRRConfigSizes                          \
-    XRRConfigRates                          \
-    XRRConfigCurrentConfiguration           \
-    XRRConfigCurrentRate                    \
-    XRRRootToScreen                         \
-    XRRSelectInput
-
-Xrandr_shadowmen = $(Xrandr_shadows:=.@LIB_MAN_SUFFIX@)
-$(Xrandr_shadowmen):
-	$(AM_V_GEN)echo ".so man$(LIB_MAN_DIR_SUFFIX)/Xrandr.$(LIB_MAN_SUFFIX)" > $@
