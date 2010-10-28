@@ -24,7 +24,7 @@ dnl Process this file with autoconf to create configure.
 AC_PREREQ([2.60])
 
 dnl
-dnl Version should match the current Render version. XRenderQueryVersion
+dnl Version should match the current Randr version. XRRQueryVersion
 dnl returns the version from randr.h, NOT the version we set here. But we
 dnl try to keep these the same.  Note that the library has an extra
 dnl digit in the version number to track changes which don't affect the
