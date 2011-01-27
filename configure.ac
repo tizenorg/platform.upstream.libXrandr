@@ -44,7 +44,6 @@ XORG_DEFAULT_OPTIONS
 AM_CONFIG_HEADER(config.h)
 
 # Check for progs
-AC_PROG_CC
 AC_PROG_LIBTOOL
 		  
 # Check randr configuration, strip extra digits from package version to
