@@ -224,8 +224,8 @@ Randr, the coordinate system is rotated in a counter-clockwise
 direction relative to the normal orientation.  Reflection is along the
 window system coordinate system, not the physical screen X and Y axis,
 so that rotation and reflection do not interact.  The other way to
-consider reflection is to is specified in the "normal" orientation,
-before rotation, if you find the other way confusing.
+consider reflection is to treat it as specified in the "normal"
+orientation, before rotation.
 .PP
 The
 .B XRRScreenChangeNotify
