@@ -275,7 +275,7 @@ of the server. If RandR is not supported, it returns 0 for
 the number of sizes.
 .PP
 .B XRRRates
-returns a pointer to a the rates supported by the specified size.
+returns a pointer to the rates supported by the specified size.
 If RandR is not supported, it returns 0 for the number of rates.
 .PP
 .B XRRTimes
