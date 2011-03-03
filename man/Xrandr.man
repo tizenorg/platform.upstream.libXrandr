@@ -121,7 +121,7 @@ Specifies which screen.
 .IP \fIdraw\fP 1i
 Specifies the screen.
 .IP \fIrotation\fP 1i
-Specifies the rotations or reflections possible of the screen.
+Specifies the possible rotations or reflections of the screen.
 .IP \fIcurrent_rotation\fP 1i
 Specifies the current rotations and reflection of the screen.
 .IP \fItimestamp\fP 1i
@@ -131,7 +131,7 @@ Specifies the timestamp when the screen was last (re)configured.
 .IP \fIconfig\fP 1i
 Specifies the screen configuration being used.
 .IP \fIsizes\fP 1i
-Specifies the array of sizes supported.
+Specifies the array of supported sizes.
 .IP \fIrate\fP 1i
 Specifies the refresh rate in Hz.
 
