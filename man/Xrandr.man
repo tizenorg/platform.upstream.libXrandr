@@ -178,14 +178,17 @@ typedef struct {
 } XRRScreenChangeNotifyEvent;
 .sp
 .fi
+The
 .B XRRScreenSize
 structure contains a possible root size in pixels and in millimeters.
+
+A
 .B XRRScreenChangeNotifyEvent
-Is sent to a client that has requested notification whenever the screen
+is sent to a client that has requested notification whenever the screen
 configuration is changed.
 
 .B XRRScreenConfiguration
-This is an opaque data type containing the configuration information
+is an opaque data type containing the configuration information
 for a screen.
 
 .B Timestamps
