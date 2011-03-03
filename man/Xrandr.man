@@ -308,9 +308,9 @@ information if it fails and try the call again (by calling
 \fBXRRGetScreenInfo\fP).
 .PP
 .B XRRSetScreenConfigAndRate
-like
+is like
 .B XRRSetScreenConfig
-but also set the refresh rate. If specified rate is not supported a
+but also sets the refresh rate. If specified rate is not supported a
 .B BadValue
 error is returned.
 .PP
@@ -325,7 +325,7 @@ are used to get specific configuration information out of a screen
 configuration.
 .PP
 .B XRRGetScreenInfo
-Returns a screen configuration for later use; the information is
+returns a screen configuration for later use; the information is
 private to the library.
 Call
 .B XRRFreeScreenConfigInfo
