@@ -185,7 +185,9 @@ structure contains a possible root size in pixels and in millimeters.
 A
 .B XRRScreenChangeNotifyEvent
 is sent to a client that has requested notification whenever the screen
-configuration is changed.
+configuration is changed. A client can perform this request by calling
+\fBXRRSelectInput\fP, passing the display, the root window, and the
+\fBRRScreenChangeNotifyMask\fP mask.
 
 .B XRRScreenConfiguration
 is an opaque data type containing the configuration information
