@@ -40,7 +40,7 @@ AM_MAINTAINER_MODE
 
 # Initialize libtool
 AC_PROG_LIBTOOL
-		  
+
 # Require X.Org macros 1.8 or later for MAN_SUBSTS set by XORG_MANPAGE_SECTIONS
 m4_ifndef([XORG_MACROS_VERSION],
           [m4_fatal([must install xorg-macros 1.8 or later before running autoconf/autogen])])
