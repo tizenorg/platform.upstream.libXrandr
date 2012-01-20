@@ -39,6 +39,7 @@ _XFUNCPROTOBEGIN
 typedef XID RROutput;
 typedef XID RRCrtc;
 typedef XID RRMode;
+typedef XID RRProvider;
 
 typedef struct {
     int	width, height;
@@ -117,6 +118,41 @@ typedef struct {
     Time timestamp;		/* time of change */
     int state;			/* NewValue, Deleted */
 } XRROutputPropertyNotifyEvent;
+
+typedef struct {
+    int type;			/* event base */
+    unsigned long serial;	/* # of last request processed by server */
+    Bool send_event;		/* true if this came from a SendEvent request */
+    Display *display;		/* Display the event was read from */
+    Window window;		/* window which selected for this event */
+    int subtype;		/* RRNotify_ProviderChange */
+    RRProvider provider; 	/* current provider (or None) */
+    Time timestamp;		/* time of change */
+    unsigned int current_role;
+} XRRProviderChangeNotifyEvent;
+
+typedef struct {
+    int type;			/* event base */
+    unsigned long serial;	/* # of last request processed by server */
+    Bool send_event;		/* true if this came from a SendEvent request */
+    Display *display;		/* Display the event was read from */
+    Window window;		/* window which selected for this event */
+    int subtype;		/* RRNotify_ProviderProperty */
+    RRProvider provider;		/* related provider */
+    Atom property;		/* changed property */
+    Time timestamp;		/* time of change */
+    int state;			/* NewValue, Deleted */
+} XRRProviderPropertyNotifyEvent;
+
+typedef struct {
+    int type;			/* event base */
+    unsigned long serial;	/* # of last request processed by server */
+    Bool send_event;		/* true if this came from a SendEvent request */
+    Display *display;		/* Display the event was read from */
+    Window window;		/* window which selected for this event */
+    int subtype;		/* RRNotify_ResourceChange */
+    Time timestamp;		/* time of change */
+} XRRResourceChangeNotifyEvent;
 
 /* internal representation is private to the library */
 typedef struct _XRRScreenConfiguration XRRScreenConfiguration;
@@ -450,6 +486,71 @@ XRRSetOutputPrimary(Display *dpy,
 RROutput
 XRRGetOutputPrimary(Display *dpy,
 		    Window window);
+
+typedef struct _XRRProviderResources {
+    Time timestamp;
+    int nproviders;
+    RRProvider *providers;
+} XRRProviderResources;
+
+XRRProviderResources *
+XRRGetProviderResources(Display *dpy, Window window);
+
+void
+XRRFreeProviderResources(XRRProviderResources *resources);
+
+typedef struct _XRRProviderInfo {
+    unsigned int capabilities;
+    int ncrtcs;
+    RRCrtc	*crtcs;
+    int noutputs;
+    RROutput    *outputs;
+    char	    *name;
+    int nassociatedproviders;
+    RRProvider *associated_providers;
+    unsigned int *associated_capability;
+    int		    nameLen;
+} XRRProviderInfo;
+  
+XRRProviderInfo *
+XRRGetProviderInfo(Display *dpy, XRRScreenResources *resources, RRProvider provider);
+
+void
+XRRFreeProviderInfo(XRRProviderInfo *provider);
+
+int
+XRRSetProviderOutputSource(Display *dpy, XID provider, XID source_provider);
+
+int
+XRRSetProviderOffloadSink(Display *dpy, XID provider, XID sink_provider);
+
+Atom *
+XRRListProviderProperties (Display *dpy, RRProvider provider, int *nprop);
+
+XRRPropertyInfo *
+XRRQueryProviderProperty (Display *dpy, RRProvider provider, Atom property);
+
+void
+XRRConfigureProviderProperty (Display *dpy, RRProvider provider, Atom property,
+			    Bool pending, Bool range, int num_values,
+			    long *values);
+			
+void
+XRRChangeProviderProperty (Display *dpy, RRProvider provider,
+			 Atom property, Atom type,
+			 int format, int mode,
+			 _Xconst unsigned char *data, int nelements);
+
+void
+XRRDeleteProviderProperty (Display *dpy, RRProvider provider, Atom property);
+
+int
+XRRGetProviderProperty (Display *dpy, RRProvider provider,
+			Atom property, long offset, long length,
+			Bool _delete, Bool pending, Atom req_type,
+			Atom *actual_type, int *actual_format,
+			unsigned long *nitems, unsigned long *bytes_after,
+			unsigned char **prop);
 
 _XFUNCPROTOEND
 

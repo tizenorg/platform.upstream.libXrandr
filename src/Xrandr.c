@@ -137,7 +137,46 @@ static Bool XRRWireToEvent(Display *dpy, XEvent *event, xEvent *wire)
 	    aevent->state = awire->state;
 	    return True;
 	}
-
+	case RRNotify_ProviderChange: {
+	    XRRProviderChangeNotifyEvent *aevent = (XRRProviderChangeNotifyEvent *) event;
+	    xRRProviderChangeNotifyEvent *awire = (xRRProviderChangeNotifyEvent *) wire;
+	    aevent->type = awire->type & 0x7F;
+	    aevent->serial = _XSetLastRequestRead(dpy, (xGenericReply *) wire);
+	    aevent->send_event = (awire->type & 0x80) != 0;
+	    aevent->display = dpy;
+	    aevent->window = awire->window;
+	    aevent->subtype = awire->subCode;
+	    aevent->provider = awire->provider;
+	    aevent->timestamp = awire->timestamp;
+	    return True;
+	}
+	case RRNotify_ProviderProperty: {
+	    XRRProviderPropertyNotifyEvent *aevent = (XRRProviderPropertyNotifyEvent *) event;
+	    xRRProviderPropertyNotifyEvent *awire = (xRRProviderPropertyNotifyEvent *) wire;
+	    aevent->type = awire->type & 0x7F;
+	    aevent->serial = _XSetLastRequestRead(dpy, (xGenericReply *) wire);
+	    aevent->send_event = (awire->type & 0x80) != 0;
+	    aevent->display = dpy;
+	    aevent->window = awire->window;
+	    aevent->subtype = awire->subCode;
+	    aevent->provider = awire->provider;
+	    aevent->property = awire->atom;
+	    aevent->timestamp = awire->timestamp;
+	    aevent->state = awire->state;
+	    return True;
+	}
+	case RRNotify_ResourceChange: {
+	    XRRResourceChangeNotifyEvent *aevent = (XRRResourceChangeNotifyEvent *) event;
+	    xRRResourceChangeNotifyEvent *awire = (xRRResourceChangeNotifyEvent *) wire;
+	    aevent->type = awire->type & 0x7F;
+	    aevent->serial = _XSetLastRequestRead(dpy, (xGenericReply *) wire);
+	    aevent->send_event = (awire->type & 0x80) != 0;
+	    aevent->display = dpy;
+	    aevent->window = awire->window;
+	    aevent->subtype = awire->subCode;
+	    aevent->timestamp = awire->timestamp;
+	    return True;
+	}
 	    break;
 	}
       }
@@ -212,6 +251,30 @@ static Status XRREventToWire(Display *dpy, XEvent *event, xEvent *wire)
 	    awire->atom = aevent->property;
 	    awire->timestamp = aevent->timestamp;
 	    awire->state = aevent->state;
+	    return True;
+	}
+	case RRNotify_ProviderChange: {
+	    xRRProviderChangeNotifyEvent *awire = (xRRProviderChangeNotifyEvent *) wire;
+	    XRRProviderChangeNotifyEvent *aevent = (XRRProviderChangeNotifyEvent *) event;
+	    awire->window = aevent->window;
+	    awire->provider = aevent->provider;
+	    return True;
+	}
+	case RRNotify_ProviderProperty: {
+	    xRRProviderPropertyNotifyEvent *awire = (xRRProviderPropertyNotifyEvent *) wire;
+	    XRRProviderPropertyNotifyEvent *aevent = (XRRProviderPropertyNotifyEvent *) event;
+	    awire->window = aevent->window;
+	    awire->provider = aevent->provider;
+	    awire->atom = aevent->property;
+	    awire->timestamp = aevent->timestamp;
+	    awire->state = aevent->state;
+	    return True;
+	}
+	case RRNotify_ResourceChange: {
+	    xRRResourceChangeNotifyEvent *awire = (xRRResourceChangeNotifyEvent *) wire;
+	    XRRResourceChangeNotifyEvent *aevent = (XRRResourceChangeNotifyEvent *) event;
+	    awire->window = aevent->window;
+	    awire->timestamp = aevent->timestamp;
 	    return True;
 	}
 	}
