@@ -21,7 +21,6 @@ X.Org X11 libXrandr runtime library
 Summary:        X
 Group:          Development/Libraries
 Requires:       %{name} = %{version}
-Provides:       libxrandr-devel
 
 %description devel
 X.Org X11 libXrandr development package
@@ -30,15 +29,12 @@ X.Org X11 libXrandr development package
 %setup -q
 
 %build
-%reconfigure  --disable-static \
-	       LDFLAGS="${LDFLAGS} -Wl,--hash-style=both -Wl,--as-needed"
+%configure  --disable-static 
 make %{?_smp_mflags}
 
 %install
 
 %make_install
-
-rm -f %{buildroot}%{_libdir}/*.la
 
 %remove_docs
 
@@ -47,7 +43,7 @@ rm -f %{buildroot}%{_libdir}/*.la
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING ChangeLog
+%doc COPYING 
 %{_libdir}/libXrandr.so.2
 %{_libdir}/libXrandr.so.2.2.0
 
@@ -56,5 +52,3 @@ rm -f %{buildroot}%{_libdir}/*.la
 %{_includedir}/X11/extensions/Xrandr.h
 %{_libdir}/libXrandr.so
 %{_libdir}/pkgconfig/xrandr.pc
-#%dir %{_mandir}/man3x
-#%{_mandir}/man3/*.3*
