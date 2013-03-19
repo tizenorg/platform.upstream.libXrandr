@@ -2,9 +2,9 @@ Name:           libXrandr
 Version:        1.4.0
 Release:        3
 License:        MIT
-Summary:        X
+Summary:        X Resize and Rotate Extension C Library
 Url:            http://www.x.org
-Group:          System Environment/Libraries
+Group:          Graphics/X Window System
 
 Source:         %{name}-%{version}.tar.bz2
 
@@ -18,7 +18,7 @@ BuildRequires:  pkgconfig(xrender)
 X.Org X11 libXrandr runtime library
 
 %package devel
-Summary:        X
+Summary:        X Resize and Rotate Extension C Library
 Group:          Development/Libraries
 Requires:       %{name} = %{version}
 
@@ -43,7 +43,7 @@ make %{?_smp_mflags}
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING 
+%license COPYING 
 %{_libdir}/libXrandr.so.2
 %{_libdir}/libXrandr.so.2.2.0
 
