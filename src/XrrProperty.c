@@ -31,6 +31,7 @@
 #include <X11/extensions/render.h>
 #include <X11/extensions/Xrender.h>
 #include "Xrandrint.h"
+#include <limits.h>
 
 Atom *
 XRRListOutputProperties (Display *dpy, RROutput output, int *nprop)
@@ -84,7 +85,7 @@ XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property)
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
     xRRQueryOutputPropertyReply rep;
     xRRQueryOutputPropertyReq	*req;
-    int				rbytes, nbytes;
+    unsigned int		rbytes, nbytes;
     XRRPropertyInfo		*prop_info;
 
     RRCheckExtension (dpy, info, NULL);
@@ -102,10 +103,14 @@ XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property)
 	return NULL;
     }
 
-    rbytes = sizeof (XRRPropertyInfo) + rep.length * sizeof (long);
-    nbytes = rep.length << 2;
+    if (rep.length < ((INT_MAX / sizeof(long)) - sizeof (XRRPropertyInfo))) {
+        rbytes = sizeof (XRRPropertyInfo) + (rep.length * sizeof (long));
+        nbytes = rep.length << 2;
 
-    prop_info = (XRRPropertyInfo *) Xmalloc (rbytes);
+        prop_info = Xmalloc (rbytes);
+    } else
+        prop_info = NULL;
+
     if (prop_info == NULL) {
 	_XEatDataWords(dpy, rep.length);
 	UnlockDisplay (dpy);
