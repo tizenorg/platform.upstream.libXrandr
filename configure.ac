@@ -55,6 +55,12 @@ AC_SUBST(RANDR_VERSION)
 # Obtain compiler/linker options for depedencies
 PKG_CHECK_MODULES(RANDR, x11 randrproto >= $RANDR_VERSION xext xextproto xrender renderproto)
 
+# Check for _XEatDataWords function that may be patched into older Xlib release
+SAVE_LIBS="$LIBS"
+LIBS="$RANDR_LIBS"
+AC_CHECK_FUNCS([_XEatDataWords])
+LIBS="$SAVE_LIBS"
+
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		man/Makefile

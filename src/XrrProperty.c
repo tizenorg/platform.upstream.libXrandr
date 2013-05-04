@@ -62,7 +62,7 @@ XRRListOutputProperties (Display *dpy, RROutput output, int *nprop)
 
 	props = (Atom *) Xmalloc (rbytes);
 	if (props == NULL) {
-	    _XEatData (dpy, nbytes);
+	    _XEatDataWords (dpy, rep.length);
 	    UnlockDisplay (dpy);
 	    SyncHandle ();
 	    *nprop = 0;
@@ -107,7 +107,7 @@ XRRQueryOutputProperty (Display *dpy, RROutput output, Atom property)
 
     prop_info = (XRRPropertyInfo *) Xmalloc (rbytes);
     if (prop_info == NULL) {
-	_XEatData (dpy, nbytes);
+	_XEatDataWords(dpy, rep.length);
 	UnlockDisplay (dpy);
 	SyncHandle ();
 	return NULL;
@@ -313,14 +313,13 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
 	     * This part of the code should never be reached.  If it is,
 	     * the server sent back a property with an invalid format.
 	     */
-	    nbytes = rep.length << 2;
-	    _XEatData(dpy, (unsigned long) nbytes);
+	    _XEatDataWords(dpy, rep.length);
 	    UnlockDisplay(dpy);
 	    SyncHandle();
 	    return(BadImplementation);
 	}
 	if (! *prop) {
-	    _XEatData(dpy, (unsigned long) nbytes);
+	    _XEatDataWords(dpy, rep.length);
 	    UnlockDisplay(dpy);
 	    SyncHandle();
 	    return(BadAlloc);
