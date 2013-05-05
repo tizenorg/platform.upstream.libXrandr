@@ -257,7 +257,7 @@ XRRGetProviderProperty (Display *dpy, RRProvider provider,
     XExtDisplayInfo		*info = XRRFindDisplay(dpy);
     xRRGetProviderPropertyReply	rep;
     xRRGetProviderPropertyReq	*req;
-    long    			nbytes, rbytes;
+    unsigned long		nbytes, rbytes;
 
     RRCheckExtension (dpy, info, 1);
 
@@ -282,34 +282,40 @@ XRRGetProviderProperty (Display *dpy, RRProvider provider,
 
     *prop = (unsigned char *) NULL;
     if (rep.propertyType != None) {
+	int format = rep.format;
+
+	/*
+	 * Protect against both integer overflow and just plain oversized
+	 * memory allocation - no server should ever return this many props.
+	 */
+	if (rep.nItems >= (INT_MAX >> 4))
+	    format = -1;        /* fall through to default error case */
+
 	/*
 	 * One extra byte is malloced than is needed to contain the property
 	 * data, but this last byte is null terminated and convenient for
 	 * returning string properties, so the client doesn't then have to
 	 * recopy the string to make it null terminated.
 	 */
-	switch (rep.format) {
+	switch (format) {
 	case 8:
 	    nbytes = rep.nItems;
 	    rbytes = rep.nItems + 1;
-	    if (rbytes > 0 &&
-		(*prop = (unsigned char *) Xmalloc ((unsigned)rbytes)))
+	    if (rbytes > 0 && (*prop = Xmalloc (rbytes)))
 		_XReadPad (dpy, (char *) *prop, nbytes);
 	    break;
 
 	case 16:
 	    nbytes = rep.nItems << 1;
 	    rbytes = rep.nItems * sizeof (short) + 1;
-	    if (rbytes > 0 &&
-		(*prop = (unsigned char *) Xmalloc ((unsigned)rbytes)))
+	    if (rbytes > 0 && (*prop = Xmalloc (rbytes)))
 		_XRead16Pad (dpy, (short *) *prop, nbytes);
 	    break;
 
 	case 32:
 	    nbytes = rep.nItems << 2;
 	    rbytes = rep.nItems * sizeof (long) + 1;
-	    if (rbytes > 0 &&
-		(*prop = (unsigned char *) Xmalloc ((unsigned)rbytes)))
+	    if (rbytes > 0 && (*prop = Xmalloc (rbytes)))
 		_XRead32 (dpy, (long *) *prop, nbytes);
 	    break;
 
