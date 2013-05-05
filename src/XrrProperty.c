@@ -259,6 +259,13 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
     xRRGetOutputPropertyReq	*req;
     unsigned long		nbytes, rbytes;
 
+    /* Always initialize return values, in case callers fail to initialize
+       them and fail to check the return code for an error. */
+    *actual_type = None;
+    *actual_format = 0;
+    *nitems = *bytes_after = 0L;
+    *prop = (unsigned char *) NULL;
+
     RRCheckExtension (dpy, info, 1);
 
     LockDisplay (dpy);
@@ -280,7 +287,6 @@ XRRGetOutputProperty (Display *dpy, RROutput output,
 	return ((xError *)&rep)->errorCode;
     }
 
-    *prop = (unsigned char *) NULL;
     if (rep.propertyType != None) {
 	int format = rep.format;
 
