@@ -7,6 +7,7 @@ Url:            http://www.x.org
 Group:          Graphics/X Window System
 
 Source:         %{name}-%{version}.tar.bz2
+Source1001: 	libXrandr.manifest
 
 BuildRequires:  pkgconfig(randrproto) >= 1.3.0
 BuildRequires:  pkgconfig(xext)
@@ -27,6 +28,7 @@ X.Org X11 libXrandr development package
 
 %prep
 %setup -q
+cp %{SOURCE1001} .
 
 %build
 %configure  --disable-static 
@@ -42,12 +44,14 @@ make %{?_smp_mflags}
 %postun -p /sbin/ldconfig
 
 %files
+%manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license COPYING 
 %{_libdir}/libXrandr.so.2
 %{_libdir}/libXrandr.so.2.2.0
 
 %files devel
+%manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_includedir}/X11/extensions/Xrandr.h
 %{_libdir}/libXrandr.so
