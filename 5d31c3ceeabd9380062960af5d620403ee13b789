@@ -1,0 +1,8 @@
+Change-Id: I5d31c3ceeabd9380062960af5d620403ee13b789
+Code-Review+2: Ryan Ware <ware@linux.intel.com>
+Verified+1: Ryan Ware <ware@linux.intel.com>
+Submitted-by: Ryan Ware <ware@linux.intel.com>
+Submitted-at: Mon, 08 Jul 2013 09:40:24 -0700
+Reviewed-on: https://review.tizen.org/gerrit/4790
+Project: platform/upstream/libXrandr
+Branch: refs/heads/tizen
