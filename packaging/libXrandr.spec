@@ -1,3 +1,5 @@
+%bcond_with x
+
 Name:           libXrandr
 Version:        1.4.0
 Release:        3
@@ -15,6 +17,10 @@ BuildRequires:  pkgconfig(xorg-macros)
 BuildRequires:  pkgconfig(xproto)
 BuildRequires:  pkgconfig(xrender)
 
+%if !%{with x}
+ExclusiveArch:
+%endif
+
 %description
 X.Org X11 libXrandr runtime library
 
@@ -31,7 +37,7 @@ X.Org X11 libXrandr development package
 cp %{SOURCE1001} .
 
 %build
-%configure  --disable-static 
+%configure  --disable-static
 make %{?_smp_mflags}
 
 %install
@@ -46,7 +52,7 @@ make %{?_smp_mflags}
 %files
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING 
+%license COPYING
 %{_libdir}/libXrandr.so.2
 %{_libdir}/libXrandr.so.2.2.0
 
