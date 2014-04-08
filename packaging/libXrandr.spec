@@ -1,7 +1,7 @@
 %bcond_with x
 
 Name:           libXrandr
-Version:        1.4.0
+Version:        1.4.2
 Release:        3
 License:        MIT
 Summary:        X Resize and Rotate Extension C Library
@@ -37,7 +37,7 @@ X.Org X11 libXrandr development package
 cp %{SOURCE1001} .
 
 %build
-%configure  --disable-static
+%autogen  --disable-static
 make %{?_smp_mflags}
 
 %install
