@@ -67,7 +67,7 @@ XRRGetProviderResources(Display *dpy, Window window)
     xrpr = (XRRProviderResources *) Xmalloc(rbytes);
 
     if (xrpr == NULL) {
-       _XEatData (dpy, (unsigned long) nbytes);
+       _XEatDataWords (dpy, rep.length);
        UnlockDisplay (dpy);
        SyncHandle ();
        return NULL;
@@ -136,7 +136,7 @@ XRRGetProviderInfo(Display *dpy, XRRScreenResources *resources, RRProvider provi
 
     xpi = (XRRProviderInfo *)Xmalloc(rbytes);
     if (xpi == NULL) {
-	_XEatData (dpy, (unsigned long) nbytes);
+	_XEatDataWords (dpy, rep.length - (ProviderInfoExtra >> 2));
 	UnlockDisplay (dpy);
 	SyncHandle ();
 	return NULL;
@@ -156,7 +156,16 @@ XRRGetProviderInfo(Display *dpy, XRRScreenResources *resources, RRProvider provi
     _XRead32(dpy, xpi->outputs, rep.nOutputs << 2);
 
     _XRead32(dpy, xpi->associated_providers, rep.nAssociatedProviders << 2);
-    _XRead32(dpy, xpi->associated_capability, rep.nAssociatedProviders << 2);
+
+    /*
+     * _XRead32 reads a series of 32-bit values from the protocol and writes
+     * them out as a series of "long int" values, but associated_capability
+     * is defined as unsigned int *, so that won't work for this array.
+     * Instead we assume for now that "unsigned int" is also 32-bits, so
+     * the values can be read without any conversion.
+     */
+    _XRead(dpy, (char *) xpi->associated_capability,
+           rep.nAssociatedProviders << 2);
 
     _XReadPad(dpy, xpi->name, rep.nameLength);
     xpi->name[rep.nameLength] = '\0';
